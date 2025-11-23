@@ -1,26 +1,29 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { App } from './app/app';
+import { provideRouter } from '@angular/router';
+
+// 🛑 LÍNEA 2 CORREGIDA: Usamos AppComponent, que es el nombre de clase estándar
+import { AppComponent } from './app/app'; 
+
+// 🛑 LÍNEA 4 CORREGIDA: Importamos la variable como 'routes', el nombre más común
+import { routes } from './app/app.routes'; 
 
 // Firebase / AngularFire
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
+// ... (el resto de las importaciones de Firebase)
 
 // Config Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAoQMk4S0K5Jb52Craq28fMqLVhQvuAcqg",
-  authDomain: "gestor-proyectos-personales.firebaseapp.com",
-  projectId: "gestor-proyectos-personales",
-  storageBucket: "gestor-proyectos-personales.firebasestorage.app",
-  messagingSenderId: "944199391992",
-  appId: "1:944199391992:web:bd7462cbd8e03431adb90d",
-  measurementId: "G-VD4MJCRJ14"
+const firebaseConfig = { 
+  // ... (tus claves) 
 };
 
-bootstrapApplication(App, {
+bootstrapApplication(AppComponent, { // ✅ Usamos AppComponent aquí también
   providers: [
+    // FIX CRÍTICO: Usamos 'routes'
+    provideRouter(routes), 
+    
+    // Configuración de Firebase (CRUD, Auth)
+    // ... (el resto de providers de Firebase)
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideAnalytics(() => getAnalytics()),
-    ScreenTrackingService,
-    UserTrackingService
+    // ...
   ],
 });

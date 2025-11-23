@@ -1,0 +1,10 @@
+/* src/styles.css o src/app/app.css */
+
+/* Reset básico para que los componentes puedan usar el 100% de la pantalla */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* ¡Esencial para que el router-outlet ocupe toda la altura! */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5; /* Un color suave para el fondo general */
+}

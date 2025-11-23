@@ -1,18 +1,18 @@
-// src/app/app.routes.ts
-
 import { Routes } from '@angular/router';
 
-// ✅ Portada - Esta línea es correcta para tu estructura (portada/portada.ts)
+// ✅ Portada: Importación correcta para tu estructura (sin .component)
 import { PortadaComponent } from './portada/portada'; 
  
-// ❌ ¡Quitamos la importación del LoginComponent temporalmente!
+// 💡 Comentado hasta que crees las carpetas 'auth/login'
 // import { LoginComponent } from './auth/login/login'; 
 
 export const routes: Routes = [
+  // 🥇 RUTA PRINCIPAL 🥇: Carga PortadaComponent al inicio
   { path: '', component: PortadaComponent, pathMatch: 'full' }, 
   
-  // ❌ ¡Comentamos la ruta de Login hasta que el componente exista!
+  // 💡 Ruta de Login (comentada)
   // { path: 'login', component: LoginComponent }, 
 
-  // ... resto de rutas
+  // Ruta para manejar URLs no encontradas
+  { path: '**', redirectTo: '' } 
 ];
