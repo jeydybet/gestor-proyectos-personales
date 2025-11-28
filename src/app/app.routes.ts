@@ -1,18 +1,24 @@
+// src/app/app.routes.ts
+
 import { Routes } from '@angular/router';
 
-// ✅ Portada: Importación correcta para tu estructura (sin .component)
+// ✅ Componentes Públicos
 import { PortadaComponent } from './portada/portada'; 
- 
-// 💡 Comentado hasta que crees las carpetas 'auth/login'
-// import { LoginComponent } from './auth/login/login'; 
+import { LoginComponent } from './auth/login/login'; 
+//import { RegisterComponent } from './auth/register/register'; 
+
+// ❌ Se eliminan las líneas de importación de ProyectosComponent y authGuard
 
 export const routes: Routes = [
-  // 🥇 RUTA PRINCIPAL 🥇: Carga PortadaComponent al inicio
-  { path: '', component: PortadaComponent, pathMatch: 'full' }, 
-  
-  // 💡 Ruta de Login (comentada)
-  // { path: 'login', component: LoginComponent }, 
+  // 🥇 RUTA PRINCIPAL
+  { path: '', component: PortadaComponent, pathMatch: 'full' }, 
+  
+  // 🔒 RUTAS DE AUTENTICACIÓN
+  { path: 'login', component: LoginComponent }, 
+  //{ path: 'register', component: RegisterComponent }, 
 
-  // Ruta para manejar URLs no encontradas
-  { path: '**', redirectTo: '' } 
+  // ❌ Se elimina la ruta de Proyectos: { path: 'projects', component: ProyectosComponent }
+
+  // Ruta para manejar URLs no encontradas
+  { path: '**', redirectTo: '' }
 ];
