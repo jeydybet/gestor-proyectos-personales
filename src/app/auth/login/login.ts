@@ -2,32 +2,33 @@
 
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth'; 
-// ❌ ELIMINADO: import { CommonModule } from '@angular/common'; 
-// ❌ ELIMINADO: import { CardComponent } from '../../common/card/card'; 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  // 🔑 Solo mantenemos módulos funcionales y de routing
+  // CRÍTICO: Importar ReactiveFormsModule y RouterLink
   imports: [ReactiveFormsModule, RouterLink], 
   templateUrl: './login.html',
+  // CRÍTICO: Enlace a los estilos
   styleUrl: './login.css'
 })
-export class LoginComponent {
+export class LoginComponent { 
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService); 
+  private authService = inject(AuthService);
+  private router = inject(Router);
   
   error: string | null = null; 
 
+  // Definición del Formulario Reactivo
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', [Validators.required]]
   });
 
   async onSubmit() {
-    this.error = null; 
+    this.error = null;
 
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -37,10 +38,17 @@ export class LoginComponent {
     const { email, password } = this.loginForm.value;
 
     try {
-      // 🔑 Lógica real de Firebase
       await this.authService.login(email, password);
+      // Redirigir al dashboard tras un login exitoso
+      this.router.navigate(['/dashboard']);
+      
     } catch (err: any) {
-      this.error = 'Inicio de sesión fallido. Credenciales incorrectas o usuario no existe.'; 
+      // Manejo de errores visibles para el usuario
+      if (err.code === 'auth/invalid-credential') {
+        this.error = 'Credenciales inválidas. Por favor, verifica tu correo y contraseña.';
+      } else {
+        this.error = 'Ocurrió un error al iniciar sesión. Inténtalo de nuevo.';
+      }
       console.error(err);
     }
   }
