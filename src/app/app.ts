@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router'; 
-// Componente principal de la aplicación
+import { RouterOutlet } from '@angular/router';
+import { FormsModule } from '@angular/forms'; // ⬅️ IMPORTANTE para ngModel
 
 @Component({
   selector: 'app-root',
-  standalone: true, // Si usas componentes Standalone
-  imports: [RouterOutlet], // ¡Importante para usar <router-outlet>!
-  templateUrl: './app.html', // o './app.component.html'
-  styleUrl: './app.css' // o './app.component.css'
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    FormsModule // ⬅️ AGREGADO
+  ],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
 })
 export class AppComponent {
   title = 'gestor-proyectos-personales';
