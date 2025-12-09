@@ -1,0 +1,141 @@
+/* src/app/auth/register/register.css */
+
+/* Usamos la misma estructura de estilos del login para consistencia */
+.register-container {
+    max-width: 400px;
+    margin: 80px auto; 
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+h2 {
+    color: #1a73e8;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 🔑 MODIFICACIÓN: Aplicamos estilos solo a los inputs base, el .input-with-icon gestionará los de contraseña */
+input[type="email"] { 
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; 
+}
+
+/* Nota: Los inputs de password ahora están dentro de .input-with-icon */
+input[type="password"] {
+    /* Quitamos el ancho del 100% para que .input-with-icon lo maneje */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; 
+    width: 100%; /* Lo dejamos en 100% aquí para asegurar que hereda bien */
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover:not([disabled]) {
+    background-color: #0d47a1;
+}
+
+button[type="submit"]:disabled {
+    background-color: #a0c3ff;
+    cursor: not-allowed;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.login-link a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.validation-error {
+    color: #dc3545;
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+
+.error-message {
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}
+
+/* Estilo para mensaje de registro exitoso */
+.success-message {
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Texto Verde oscuro */
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+}
+
+/* 🔑 ESTILOS NUEVOS PARA EL BOTÓN DE VISIBILIDAD */
+
+.input-with-icon {
+    position: relative; /* Establece el contexto para posicionar el botón */
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+}
+
+.input-with-icon input {
+    /* Hace espacio a la derecha para que el botón no tape el texto */
+    padding-right: 40px; 
+    width: 100%; /* Asegura que el input dentro del contenedor ocupe el 100% */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 5px; /* Posiciona a la derecha */
+    top: 50%;
+    transform: translateY(-50%); /* Centra verticalmente */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 16px; 
+    z-index: 10; 
+    line-height: 1;
+    color: #666; /* Color gris para el ojo */
+}
+
+.toggle-password:hover {
+    color: #1a73e8;
+}

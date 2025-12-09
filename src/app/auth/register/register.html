@@ -1,1 +1,60 @@
-<p>register works!</p>
+<div class="register-container">
+    <h2>Crear Cuenta</h2>
+
+    <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        
+        <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input id="email" type="email" formControlName="email">
+            <div *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)" class="validation-error">
+                <p *ngIf="registerForm.get('email')?.errors?.['required']">El correo es obligatorio.</p>
+                <p *ngIf="registerForm.get('email')?.errors?.['email']">Debe ser un correo electrónico válido.</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Contraseña</label>
+            <div class="input-with-icon">
+                <input id="password" [type]="passwordVisible ? 'text' : 'password'" formControlName="password">
+                <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+                    {{ passwordVisible ? '🙈' : '👁️' }}
+                </button>
+            </div>
+            <div *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)" class="validation-error">
+                <p *ngIf="registerForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</p>
+                <p *ngIf="registerForm.get('password')?.errors?.['minlength']">Mínimo 6 caracteres.</p>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="confirmPassword">Confirmar Contraseña</label>
+            <div class="input-with-icon">
+                <input id="confirmPassword" [type]="confirmPasswordVisible ? 'text' : 'password'" formControlName="confirmPassword">
+                <button type="button" class="toggle-password" (click)="toggleConfirmPasswordVisibility()">
+                    {{ confirmPasswordVisible ? '🙈' : '👁️' }}
+                </button>
+            </div>
+            <div *ngIf="registerForm.errors?.['mismatch'] && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)" class="validation-error">
+                <p>Las contraseñas no coinciden.</p>
+            </div>
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid">
+            Registrarse
+        </button>
+    </form>
+
+    <div class="login-link">
+        <p>¿Ya tienes una cuenta? 
+            <a [routerLink]="['/login']">Inicia sesión aquí</a>
+        </p>
+    </div>
+</div>
