@@ -1,9 +1,7 @@
-// src/main.ts (CÓDIGO CORREGIDO)
-
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
-import { PortadaComponent } from './app/portada/portada'; // 🔑 IMPORTACIÓN CORREGIDA
+import { AppComponent } from './app/app';
 
-// 🔑 ARRANQUE CORREGIDO
-bootstrapApplication(PortadaComponent, appConfig) 
+// ✅ ARRANQUE CORREGIDO: Ahora usa AppComponent que tiene el <router-outlet>
+bootstrapApplication(AppComponent, appConfig) 
   .catch((err) => console.error(err));
