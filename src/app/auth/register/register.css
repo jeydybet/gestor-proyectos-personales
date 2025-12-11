@@ -1,6 +1,6 @@
-/* src/app/auth/register/register.css */
+/* src/app/auth/register/register.css (CÓDIGO FINAL Y COMPLETO) */
 
-/* Usamos la misma estructura de estilos del login para consistencia */
+/* --- Estilos Generales del Contenedor --- */
 .register-container {
     max-width: 400px;
     margin: 80px auto; 
@@ -28,7 +28,7 @@ label {
     color: #333;
 }
 
-/* 🔑 MODIFICACIÓN: Aplicamos estilos solo a los inputs base, el .input-with-icon gestionará los de contraseña */
+/* Estilo para input de Email */
 input[type="email"] { 
     width: 100%;
     padding: 10px;
@@ -37,16 +37,7 @@ input[type="email"] {
     box-sizing: border-box; 
 }
 
-/* Nota: Los inputs de password ahora están dentro de .input-with-icon */
-input[type="password"] {
-    /* Quitamos el ancho del 100% para que .input-with-icon lo maneje */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; 
-    width: 100%; /* Lo dejamos en 100% aquí para asegurar que hereda bien */
-}
-
+/* --- Estilos del Botón Principal --- */
 button[type="submit"] {
     width: 100%;
     padding: 10px;
@@ -69,20 +60,7 @@ button[type="submit"]:disabled {
     cursor: not-allowed;
 }
 
-.login-link {
-    text-align: center;
-    margin-top: 15px;
-}
-
-.login-link a {
-    color: #1a73e8;
-    text-decoration: none;
-}
-
-.login-link a:hover {
-    text-decoration: underline;
-}
-
+/* --- Estilos de Mensajes de Estado --- */
 .validation-error {
     color: #dc3545;
     font-size: 0.85em;
@@ -98,44 +76,67 @@ button[type="submit"]:disabled {
     border-radius: 4px;
 }
 
-/* Estilo para mensaje de registro exitoso */
 .success-message {
     padding: 10px;
     margin-bottom: 15px;
-    background-color: #d4edda; /* Verde claro */
-    color: #155724; /* Texto Verde oscuro */
+    background-color: #d4edda;
+    color: #155724; 
     border: 1px solid #c3e6cb;
     border-radius: 4px;
 }
 
-/* 🔑 ESTILOS NUEVOS PARA EL BOTÓN DE VISIBILIDAD */
+/* --- Estilos de Visibilidad de Contraseña (CLAVE PARA EL FORMATO) --- */
 
 .input-with-icon {
-    position: relative; /* Establece el contexto para posicionar el botón */
-    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+    position: relative; 
+    width: 100%;
+    /* El borde está aquí para envolver el input y el botón */
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    display: flex; 
+    align-items: center;
+    background-color: #fff; 
 }
 
-.input-with-icon input {
-    /* Hace espacio a la derecha para que el botón no tape el texto */
-    padding-right: 40px; 
-    width: 100%; /* Asegura que el input dentro del contenedor ocupe el 100% */
+/* Input de Contraseña dentro del contenedor */
+.input-with-icon input[type="password"],
+.input-with-icon input[type="text"] {
+    /* No tiene borde propio, lo hereda del contenedor */
+    border: none; 
+    padding: 10px 0px 10px 10px; 
+    border-radius: 0;
+    flex-grow: 1; 
+    box-sizing: border-box; 
 }
 
 .toggle-password {
-    position: absolute;
-    right: 5px; /* Posiciona a la derecha */
-    top: 50%;
-    transform: translateY(-50%); /* Centra verticalmente */
-    background: none;
+    /* El botón del "ojo" */
+    height: 100%; 
+    background: transparent;
     border: none;
     cursor: pointer;
-    padding: 5px;
+    padding: 0 10px; 
     font-size: 16px; 
-    z-index: 10; 
     line-height: 1;
-    color: #666; /* Color gris para el ojo */
+    color: #666;
+    order: 2; 
 }
 
 .toggle-password:hover {
     color: #1a73e8;
+}
+
+/* --- Estilos de Enlace de Login --- */
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.login-link a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
 }
