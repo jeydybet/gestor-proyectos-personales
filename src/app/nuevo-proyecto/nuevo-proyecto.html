@@ -1,0 +1,28 @@
+<<form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="creation-form">
+    <h3>Crear Nuevo Proyecto</h3>
+    
+    <div class="form-group">
+        <label for="name">Nombre</label>
+        <input id="name" type="text" formControlName="name" placeholder="Ej: Rediseño de Landing Page">
+        <div 
+            *ngIf="projectForm.get('name')?.invalid && (projectForm.get('name')?.dirty || projectForm.get('name')?.touched)" 
+            class="validation-error">
+            El nombre es requerido y debe tener al menos 3 caracteres.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="description">Descripción (Opcional)</label>
+        <textarea id="description" formControlName="description" rows="3" placeholder="Objetivo y alcance del proyecto."></textarea>
+    </div>
+
+    <div class="form-actions">
+        <button type="button" class="cancel-btn" (click)="onCancel()">
+            Cancelar
+        </button>
+        
+        <button type="submit" [disabled]="projectForm.invalid || isLoading" class="save-project-btn primary-action">
+            {{ isLoading ? 'Guardando...' : 'Guardar Proyecto' }}
+        </button>
+    </div>
+</form>

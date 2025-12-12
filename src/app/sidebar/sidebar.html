@@ -8,9 +8,12 @@
         <a *ngFor="let item of navItems" 
            [routerLink]="item.route"
            routerLinkActive="active-link"
-           class="nav-item">
+           class="nav-item"
+           
+           [routerLinkActiveOptions]="item.route === '/dashboard' ? { exact: true } : { exact: false }">
+            
             <i class="icon-{{ item.icon }}"></i> 
             <span>{{ item.name }}</span>
         </a>
     </nav>
-</div>
+

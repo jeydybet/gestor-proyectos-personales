@@ -1,63 +1,90 @@
-// src/app/auth/login/login.ts (CÓDIGO FINAL CORREGIDO)
+// src/app/login/login.component.ts (VERSIÓN FINAL CORREGIDA)
 
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common'; // 🔑 Importado para usar *ngIf
-import { AuthService } from '../../services/auth'; 
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+// 🔑 CORRECCIÓN: Usar '../services/auth.service' (Angular maneja la extensión .ts automáticamente)
+import { AuthService } from '../services/auth.service'; 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  // CRÍTICO: Importar ReactiveFormsModule, RouterLink y CommonModule
-  imports: [ReactiveFormsModule, RouterLink, CommonModule], 
-  templateUrl: './login.html',
+  // CRÍTICO: Importar ReactiveFormsModule, RouterModule y CommonModule
+  imports: [ReactiveFormsModule, RouterModule, CommonModule], 
+  templateUrl: './login.html', // 🔑 Usas .html
   styleUrl: './login.css'
 })
 export class LoginComponent { 
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  // 🔑 El servicio ya está bien inyectado
+  private authService = inject(AuthService); 
   private router = inject(Router);
   
+  // ... (Resto de las variables y funciones) ...
+  isLoginMode: boolean = true;
+  isLoading: boolean = false;
   error: string | null = null; 
-  passwordVisible: boolean = false; // 🔑 Variable para visibilidad de contraseña
+  passwordVisible: boolean = false; 
 
-  // 🔑 Función para alternar visibilidad
-  togglePasswordVisibility(): void {
-    this.passwordVisible = !this.passwordVisible;
-  }
-  
-  // Definición del Formulario Reactivo
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    // 🔑 Añadido minLength(6) para coincidir con la política de Firebase
     password: ['', [Validators.required, Validators.minLength(6)]] 
   });
 
+  toggleMode(): void {
+    this.isLoginMode = !this.isLoginMode;
+    this.error = null;
+    this.loginForm.reset();
+  }
+
+  togglePasswordVisibility(): void {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
   async onSubmit() {
     this.error = null;
-
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
     
     const { email, password } = this.loginForm.value;
+    this.isLoading = true;
 
     try {
-      await this.authService.login(email, password);
-      // Login exitoso: Redirigir al dashboard
-      this.router.navigate(['/dashboard']);
+      if (this.isLoginMode) {
+        // Ejecutar Login
+        await this.authService.login(email, password);
+      } else {
+        // Ejecutar Registro
+        await this.authService.register(email, password);
+      }
+      
+      this.router.navigate(['/dashboard/projects']);
       
     } catch (err: any) {
-      // Manejo de errores de Login de Firebase
-      // Firebase usa 'auth/invalid-credential' para casi todos los fallos de login (user not found, wrong password, etc.)
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        this.error = 'Correo o contraseña incorrectos. Por favor, verifica tus credenciales.';
-      } else {
-        this.error = 'Ocurrió un error al iniciar sesión. Inténtalo de nuevo.';
-      }
+      this.error = this.getErrorMessage(err.code);
       console.error(err);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  private getErrorMessage(errorCode: string): string {
+    switch (errorCode) {
+      case 'auth/invalid-email':
+        return 'El formato del correo electrónico no es válido.';
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        return 'Correo o contraseña incorrectos. Verifica tus credenciales.';
+      case 'auth/email-already-in-use':
+        return 'Esta dirección de correo ya está registrada.';
+      case 'auth/weak-password':
+        return 'La contraseña debe tener al menos 6 caracteres.';
+      default:
+        return 'Ocurrió un error inesperado al autenticar.';
     }
   }
 }

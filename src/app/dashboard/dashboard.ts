@@ -1,30 +1,70 @@
-// src/app/dashboard/dashboard.ts (CÓDIGO COMPLETO Y CORREGIDO)
+// src/app/dashboard/dashboard.ts (CÓDIGO FINAL LIMPIO PARA EL LAYOUT CONTENEDOR)
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core'; 
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth'; 
 import { SidebarComponent } from '../sidebar/sidebar'; 
-import { CommonModule } from '@angular/common'; // Asegúrate de importar CommonModule
+import { CommonModule } from '@angular/common'; 
+import { DataService } from '../services/data'; 
+
+// 🔑 IMPORTACIONES DE REACTIVIDAD Y ROUTER
+import { FormControl, ReactiveFormsModule } from '@angular/forms'; 
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs'; 
+import { RouterOutlet } from '@angular/router'; // 🔑 ¡Añadir esta importación es CRÍTICO!
+
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  // CRÍTICO: Importar SidebarComponent para que sea un elemento conocido
-  imports: [SidebarComponent, CommonModule], 
+  // 🔑 ¡ASEGÚRATE DE INCLUIR ROUTEROUTLET!
+  imports: [SidebarComponent, CommonModule, ReactiveFormsModule, RouterOutlet], 
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
-// La clase debe estar EXPORTADA y declarada SOLO UNA VEZ
-export class DashboardComponent {
+export class DashboardComponent implements OnInit { 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private dataService = inject(DataService); 
 
-  // 🔑 VARIABLES DINÁMICAS INICIALIZADAS A CERO
-  tareasVencidas: number = 0;
-  tareasHoy: number = 0;
-  completadasSemana: number = 0;
+  // 🔑 LÓGICA DEL BUSCADOR (ESTO SE MANTIENE)
+  searchControl = new FormControl(''); 
+  searchResults: any[] = []; 
 
-  // Función para Cerrar Sesión
+  // 🛑 ELIMINADAS: Variables y lógica de widgets han sido movidas a DashboardOverviewComponent
+  // --------------------------------------------------------------------------------------
+  // 🛑 tareasVencidas: number = 0;
+  // 🛑 tareasHoy: number = 0;
+  // 🛑 completadasSemana: number = 0;
+  // --------------------------------------------------------------------------------------
+
+  ngOnInit(): void {
+    // 1. Configuración de la Búsqueda en Tiempo Real
+    this.setupSearch(); 
+    // 🛑 ELIMINADA: La llamada loadDashboardSummary() ha sido MOVIMIENTO
+  }
+
+  // Lógica para configurar el buscador con RxJS (Esto se mantiene)
+  private setupSearch(): void {
+     this.searchControl.valueChanges.pipe(
+      debounceTime(300), 
+      distinctUntilChanged(), 
+      switchMap(query => {
+        if (!query || query.length < 2) { 
+          this.searchResults = [];
+          return of([]); 
+        }
+        return this.dataService.searchData(query as string);
+      })
+    ).subscribe(results => {
+      this.searchResults = results;
+    });
+  }
+
+  // 🛑 ELIMINADO: Todo el método loadDashboardSummary() ha sido MOVIMIENTO
+  // private loadDashboardSummary(): void { ... }
+
+  // Función para Cerrar Sesión (Se mantiene)
   async onLogout() {
     try {
       await this.authService.logout();
@@ -33,9 +73,4 @@ export class DashboardComponent {
       console.error('Error al cerrar sesión:', error);
     }
   }
-
-  // Futuro método para cargar datos:
-  // ngOnInit() {
-  //   this.cargarDatosDashboard();
-  // }
 }

@@ -1,8 +1,18 @@
-/* src/app/auth/login/login.css */
+/* src/app/login/login.component.css (CÓDIGO CORREGIDO PARA COINCIDIR CON EL HTML) */
 
-.login-container {
+/* 🔑 Clase corregida para el contenedor principal */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Para centrar verticalmente en la página */
+    background-color: #f0f2f5; 
+}
+
+/* 🔑 Clase corregida para el formulario (simula .login-container) */
+.auth-form {
     max-width: 400px;
-    margin: 80px auto; /* Centra el formulario vertical y horizontalmente */
+    width: 100%;
     padding: 30px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -11,7 +21,7 @@
 }
 
 h2 {
-    color: #1a73e8; /* Tono azul para el título */
+    color: #1a73e8; 
     text-align: center;
     margin-bottom: 25px;
 }
@@ -27,8 +37,8 @@ label {
     color: #333;
 }
 
-input[type="email"],
-input[type="password"] {
+/* Ajuste para input dentro del .form-group */
+.form-group input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -36,7 +46,8 @@ input[type="password"] {
     box-sizing: border-box; 
 }
 
-button[type="submit"] {
+/* 🔑 Estilos para el botón de Submit (clase .primary-action en el HTML) */
+.form-actions button.primary-action {
     width: 100%;
     padding: 10px;
     background-color: #1a73e8;
@@ -49,31 +60,36 @@ button[type="submit"] {
     transition: background-color 0.3s;
 }
 
-button[type="submit"]:hover:not([disabled]) {
+.primary-action:hover:not([disabled]) {
     background-color: #0d47a1;
 }
 
-button[type="submit"]:disabled {
+.primary-action:disabled {
     background-color: #a0c3ff;
     cursor: not-allowed;
 }
 
-.register-link {
+/* 🔑 Estilos para el botón de cambio de modo (toggle-mode-btn) */
+.toggle-mode-btn {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #1a73e8;
     text-align: center;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 10px;
     margin-top: 15px;
 }
 
-.register-link a {
-    color: #1a73e8;
-    text-decoration: none;
-}
-
-.register-link a:hover {
+.toggle-mode-btn:hover {
     text-decoration: underline;
 }
 
+/* Estilos de validación y error */
 .validation-error {
-    color: #dc3545; /* Rojo para errores de validación */
+    color: #dc3545; 
     font-size: 0.85em;
     margin-top: 5px;
 }
@@ -85,4 +101,25 @@ button[type="submit"]:disabled {
     color: #721c24;
     border: 1px solid #f5c6cb;
     border-radius: 4px;
+}
+
+/* Estilos para el grupo de contraseña con el botón de visibilidad */
+.password-input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.password-input-group input {
+    /* El input debe ocupar el espacio sin borde y con el padding ajustado */
+    flex-grow: 1;
+    border: none;
+    padding: 10px;
+}
+
+.password-toggle {
+    cursor: pointer;
+    padding: 0 10px;
+    font-size: 1.2em;
 }

@@ -1,0 +1,31 @@
+<div class="projects-container">
+    
+    <div class="projects-header">
+        <h2>Mis Proyectos ({{ totalProjects }})</h2>
+        <button 
+            class="create-project-btn" 
+            (click)="toggleCreationMode()">
+            {{ isCreating ? 'Cancelar' : 'Nuevo Proyecto' }} 
+        </button>
+    </div>
+
+    <div *ngIf="isCreating" class="creation-form-wrapper">
+        <app-nuevo-proyecto 
+            (creationCompleted)="handleCreationResult($event)">
+        </app-nuevo-proyecto>
+    </div>
+    <div *ngIf="!isCreating" class="project-list-grid">
+        
+        <div *ngIf="isLoading" class="loading-message">Cargando proyectos...</div>
+        
+        <div *ngIf="!isLoading && projects.length === 0" class="no-projects-message">
+            <p>¡Aún no tienes proyectos! Crea tu primer proyecto para empezar.</p>
+            <button class="create-project-btn primary-action" (click)="toggleCreationMode()">Comenzar</button>
+        </div>
+
+        <div *ngFor="let project of projects" class="project-card">
+             </div>
+
+    </div>
+
+</div>

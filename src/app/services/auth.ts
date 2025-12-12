@@ -1,60 +1,40 @@
-// src/app/services/auth.ts (CÓDIGO CORREGIDO)
-import { Injectable, inject } from '@angular/core';
+// src/app/services/auth.service.ts (VERSIÓN FINAL Y OPTIMIZADA)
+
+import { inject, Injectable } from '@angular/core';
 import { 
   Auth, 
   user, 
   signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
   signOut, 
+  createUserWithEmailAndPassword, 
   User 
 } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { shareReplay } from 'rxjs/operators'; // Necesario para estabilidad
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private auth: Auth = inject(Auth);
-  private router: Router = inject(Router);
 
-  public currentUser$: Observable<User | null> = user(this.auth);
+  // 🔑 Observable que rastrea el estado de autenticación. 
+  // shareReplay asegura que el estado sea estable al cargar la página.
+  public user$: Observable<User | null> = user(this.auth).pipe(
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
 
-  constructor() {
-    this.currentUser$.subscribe(user => {
-      if (user) {
-        this.router.navigate(['/dashboard']); 
-      } else {
-        if (this.router.url !== '/' && this.router.url !== '/register') {
-             this.router.navigate(['/login']);
-        }
-      }
-    });
-  }
-
-  getCurrentUserPromise(): Promise<User | null> {
-    return new Promise((resolve) => {
-      const unsubscribe = this.auth.onAuthStateChanged(user => {
-        unsubscribe();
-        resolve(user);
-      });
-    });
-  }
-
-  getCurrentUser(): User | null {
-      return this.auth.currentUser;
-  }
-
-  // 🔒 LOGIN (Sintaxis corregida)
+  // 1. 🔑 FUNCIÓN DE INICIO DE SESIÓN
   async login(email: string, password: string): Promise<void> {
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
     } catch (error) {
+      // Re-lanza el error para que el componente de Login lo maneje
       throw error; 
     }
   }
 
-  // 📝 REGISTRO (Sintaxis corregida)
+  // 2. 🔑 FUNCIÓN DE REGISTRO
   async register(email: string, password: string): Promise<void> {
     try {
       await createUserWithEmailAndPassword(this.auth, email, password);
@@ -63,8 +43,15 @@ export class AuthService {
     }
   }
 
-  // 🚪 LOGOUT (Sintaxis corregida)
+  // 3. 🔑 FUNCIÓN DE CIERRE DE SESIÓN
   async logout(): Promise<void> {
     await signOut(this.auth);
+  }
+
+  // 4. 🔑 FUNCIÓN PARA OBTENER EL UID (ID de usuario de Firebase)
+  // CRÍTICO: Este UID se usará en DataService para saber qué proyectos filtrar.
+  getCurrentUserId(): string | null {
+    // Retorna el UID si existe un usuario logueado, de lo contrario retorna null
+    return this.auth.currentUser ? this.auth.currentUser.uid : null;
   }
 }

@@ -5,7 +5,10 @@
         <header class="header">
             <div class="app-title">Gestor de Proyectos Personales</div>
             
-            <input type="text" placeholder="Buscar proyectos o tareas..." class="search-input">
+            <input type="text" 
+                   [formControl]="searchControl" 
+                   placeholder="Buscar proyectos o tareas..." 
+                   class="search-input">
 
             <div class="user-actions">
                 <span class="profile-icon">J</span> 
@@ -16,26 +19,23 @@
         </header>
 
         <main class="content-body">
-            <h2>Dashboard: Resumen General</h2>
             
-            <div class="widgets-grid">
-                <div class="widget card red">
-                    <h3>Tareas Vencidas</h3>
-                    <p class="count">{{ tareasVencidas }}</p>
+            <div *ngIf="searchControl.value" class="search-results-container">
+                <h3 *ngIf="searchControl.value.length >= 3">Resultados de la Búsqueda para: "{{ searchControl.value }}"</h3>
+                <div *ngIf="searchResults.length === 0 && searchControl.value.length >= 3" class="no-results">
+                    No se encontraron coincidencias.
                 </div>
-                
-                <div class="widget card yellow">
-                    <h3>Para Hoy</h3>
-                    <p class="count">{{ tareasHoy }}</p>
-                </div>
+                <ul class="results-list">
+                    <li *ngFor="let result of searchResults" class="result-item">
+                        🔍 {{ result.title }} ({{ result.type }})
+                    </li>
+                </ul>
+            </div>
 
-                <div class="widget card green">
-                    <h3>Completadas esta semana</h3>
-                    <p class="count">{{ completadasSemana }}</p>
-                </div>
+            <div *ngIf="!searchControl.value">
+                <router-outlet></router-outlet> 
             </div>
             
-            <p class="info-text">El resto de los widgets (Gráfico, Próximas Tareas) se implementarán en los siguientes pasos.</p>
         </main>
     </div>
 </div>
