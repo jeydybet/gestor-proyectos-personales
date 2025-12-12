@@ -1,18 +1,27 @@
-<header class="navbar">
-    <h1>Gestor de Proyectos Personales</h1>
-    <nav></nav>
-</header>
-
-<main class="hero">
-    <div class="hero-content">
-        <h2>Organiza tus metas y gestiona tus proyectos con facilidad.</h2>
-        <p>Tu control total sobre proyectos, tareas y plazos. Accede en cualquier momento y lugar.</p>
-        
-        <a [routerLink]="['/login']" class="btn-secondary">
-            Comenzar Ahora →
-        </a>
-    </div>
+<div class="portada-container">
     
-    <div class="hero-image">
+    <h1 class="global-header-title">Gestor de Proyectos Personales</h1>
+    
+    <div class="content-wrapper">
+        <div class="content-left">
+            
+            <h2 class="subtitle">Organiza tus metas y gestiona tus proyectos con facilidad.</h2>
+            
+            <p class="description">
+                Tu control total sobre proyectos, tareas y plazos. Accede en cualquier momento y lugar.
+            </p>
+
+            <button 
+                *ngIf="!showLogin" 
+                (click)="toggleLoginDisplay()" 
+                class="action-button"
+            >
+                Comenzar Ahora
+            </button>
+        </div>
+
+        <div *ngIf="showLogin" class="form-right">
+            <app-login></app-login>
+        </div>
     </div>
-</main>
+</div>

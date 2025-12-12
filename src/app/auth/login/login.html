@@ -1,47 +1,86 @@
-<div class="auth-wrapper">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+<div class="login-page-container">
+    <div class="form-card">
         
-        <h2>{{ isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta' }}</h2>
+        <h2 class="form-title">{{ isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta' }}</h2>
 
-        <div *ngIf="error" class="error-message">
-            {{ error }}
-        </div>
-
-        <div class="form-group">
-            <label for="email">Correo Electrónico</label>
-            <input id="email" type="email" formControlName="email" placeholder="tu.email@ejemplo.com">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             
-            <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="validation-error">
-                <p *ngIf="loginForm.get('email')?.errors?.['required']">El correo es obligatorio.</p>
-                <p *ngIf="loginForm.get('email')?.errors?.['email']">Debe ser un correo electrónico válido.</p>
+            <div class="input-group">
+                <label for="email">Correo Electrónico</label>
+                <input 
+                    id="email" 
+                    type="email" 
+                    formControlName="email" 
+                    placeholder="ejemplo@correo.com"
+                >
+                <div class="error-message-placeholder">
+                    <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
+                        Por favor, introduce un email válido.
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="password">Contraseña</label>
-            <div class="password-input-group">
-                <input id="password" [type]="passwordVisible ? 'text' : 'password'" formControlName="password" placeholder="Mínimo 6 caracteres">
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <div class="password-input-wrapper">
+                    <input 
+                        id="password" 
+                        formControlName="password" 
+                        placeholder="Contraseña"
+                        [type]="passwordVisible && !isLoginMode ? 'text' : 'password'"
+                    >
+                    <span class="password-toggle-icon" 
+                          *ngIf="!isLoginMode" 
+                          (click)="togglePasswordVisibility()">
+                        {{ passwordVisible ? '🙈' : '👁️' }}
+                    </span>
+                </div>
+                <div class="error-message-placeholder">
+                    <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+                        La contraseña debe tener al menos 6 caracteres.
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group" *ngIf="!isLoginMode">
+                <label for="confirm-password">Confirmar Contraseña</label>
+                <div class="password-input-wrapper">
+                    <input 
+                        id="confirm-password" 
+                        formControlName="passwordConfirm" 
+                        placeholder="Confirmar Contraseña"
+                        [type]="passwordConfirmVisible ? 'text' : 'password'"
+                    >
+                    <span class="password-toggle-icon" 
+                          (click)="togglePasswordConfirmVisibility()">
+                         {{ passwordConfirmVisible ? '🙈' : '👁️' }}
+                    </span>
+                </div>
                 
-                <span class="password-toggle" (click)="togglePasswordVisibility()">
-                    {{ passwordVisible ? '👁️' : '🔒' }}
-                </span>
+                <div class="error-message-placeholder">
+                    <div *ngIf="loginForm.hasError('passwordsDoNotMatch')" class="error-message">
+                        Las contraseñas no coinciden.
+                    </div>
+                </div>
             </div>
             
-            <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="validation-error">
-                <p *ngIf="loginForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</p>
-                <p *ngIf="loginForm.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres.</p>
+            <div *ngIf="error" class="error-message global-error">
+                {{ error }}
             </div>
-        </div>
 
-        <div class="form-actions">
-            <button 
-                type="submit" 
-                [disabled]="loginForm.invalid || isLoading" 
-                class="primary-action"> {{ isLoading ? 'Cargando...' : (isLoginMode ? 'Acceder' : 'Registrarme') }} </button>
-        </div>
+            <button type="submit" [disabled]="loginForm.invalid || isLoading" class="submit-button">
+                <span *ngIf="!isLoading">{{ isLoginMode ? 'Iniciar Sesión' : 'Registrarse' }}</span>
+                <span *ngIf="isLoading">Cargando...</span>
+            </button>
 
-        <button type="button" class="toggle-mode-btn" (click)="toggleMode()">
-            {{ isLoginMode ? '¿No tienes cuenta? Regístrate.' : '¿Ya tienes cuenta? Inicia Sesión.' }} 
-        </button>
-    </form>
+        </form>
+
+        <p class="toggle-link">
+            {{ isLoginMode ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?' }} 
+            <a (click)="toggleMode()" class="link-register">
+                {{ isLoginMode ? 'Regístrate aquí' : 'Inicia sesión aquí' }}
+            </a>
+        </p>
+
+    </div>
 </div>

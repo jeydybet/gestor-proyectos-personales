@@ -1,7 +1,8 @@
-// src/app/guards/auth.ts (SOLUCIÓN ASÍNCRONA FINAL)
+// src/app/guards/auth.ts (CÓDIGO FINAL CORREGIDO)
 
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+// 🔑 RUTA CORREGIDA: Importa 'auth' (sin .service)
 import { AuthService } from '../services/auth'; 
 import { map, take } from 'rxjs'; 
 
@@ -9,8 +10,8 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // El Guard debe ser asíncrono y esperar el valor del Observable
-  return authService.currentUser$.pipe(
+  // ✅ CORRECCIÓN CRÍTICA: Cambiar currentUser$ a user$
+  return authService.user$.pipe( 
     // Tomamos solo el primer valor que emite el Observable y luego nos desuscribimos
     take(1), 
     // Mapeamos ese valor (el objeto User o null) a una decisión booleana o de redirección

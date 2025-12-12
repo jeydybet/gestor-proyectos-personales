@@ -1,95 +1,112 @@
-/* Variables de color para un diseño limpio */
+/* src/app/portada/portada.css (VERSION FINAL Y ESTILIZADA) */
+
+/* Tipografía base más limpia para todo el componente */
 :host {
-    --color-primary: #3f51b5; /* Azul principal */
-    --color-secondary: #ff9800; /* Naranja/Amarillo de acento */
-    --color-text: #1a237e;
-    --color-background: #ffffff;
-    --color-light-bg: #f8f8f8;
+    font-family: Arial, sans-serif;
 }
 
-/* 1. BARRA DE NAVEGACIÓN */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 5%;
-    background-color: var(--color-light-bg);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.navbar h1 {
-    color: var(--color-primary);
-    font-size: 1.5rem;
-    margin: 0;
-}
-
-/* 2. SECCIÓN PRINCIPAL (HERO) */
-.hero {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 5rem 5%;
-    min-height: 85vh;
-    background-color: var(--color-background);
-    gap: 2rem;
-}
-
-.hero-content {
-    max-width: 550px;
-}
-
-.hero h2 {
-    font-size: 3rem;
-    color: var(--color-text);
-    margin-bottom: 1rem;
-    line-height: 1.2;
-}
-
-.hero p {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 2rem;
-}
-
-/* 3. ESTILOS DE BOTONES */
-.btn-primary, .btn-secondary {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: bold;
+/* --- TÍTULO POSICIONADO EN LA ESQUINA Y TIPO BANNER --- */
+.global-header-title {
+    position: absolute; 
+    top: 0;            
+    left: 0;           
+    width: 100%;       
+    box-sizing: border-box; 
+    z-index: 100;      
+    
+    background-color: #ffffff; 
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); 
+    
+    /* 🔑 CRÍTICO: Estilo de fuente elegante y color azul para el título */
+    font-family: Georgia, serif; /* Fuente serif elegante */
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: #1a237e; /* Azul marino/índigo de las imágenes */
+    
     text-decoration: none;
+    margin: 0;
+    padding: 15px 50px; 
+}
+
+/* --- ESTILOS DEL CONTENEDOR PRINCIPAL (BASE) --- */
+.portada-container {
+    position: relative; 
+    min-height: 100vh;
+    width: 100%;
+    
+    /* Fondo base blanco */
+    background: #ffffff; 
+    
+    box-sizing: border-box;
+}
+
+/* --- CONTENIDO WRAPPER (Flexbox para el centro) --- */
+.content-wrapper {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    min-height: calc(100vh - 70px); 
+    padding: 70px 0 0 0; 
+    width: 100%;
+}
+
+/* --- Estilos de la Columna de Contenido (Izquierda - BLANCA) --- */
+.content-left {
+    max-width: 550px;
+    text-align: left;
+    padding: 0 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+}
+
+/* 🔑 CRÍTICO: Fuente elegante para el subtítulo principal */
+.subtitle {
+    font-family: Georgia, serif; 
+    font-size: 2.8rem; 
+    font-weight: 700;
+    color: #1a237e; /* Azul marino/índigo para que resalte */
+    margin-bottom: 20px;
+    line-height: 1.1;
+}
+
+.description {
+    font-size: 1.1rem;
+    color: #424242; 
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* --- Estilos del Botón "Comenzar Ahora" --- */
+.action-button {
+    padding: 15px 30px;
+    background-color: #ff9800; 
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
     cursor: pointer;
-    border: 2px solid transparent;
-    display: inline-block;
     transition: background-color 0.3s;
 }
 
-.btn-primary {
-    background-color: var(--color-primary);
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #303f9f;
-}
-
-.btn-secondary {
-    background-color: var(--color-secondary);
-    color: white;
-    margin-top: 1.5rem;
-}
-
-.btn-secondary:hover {
+.action-button:hover {
     background-color: #fb8c00;
 }
 
-/* 4. RESPONSIVE DESIGN */
-@media (max-width: 900px) {
-    .hero {
-        flex-direction: column;
-        text-align: center;
-        padding: 4rem 5%;
-    }
-    .hero-image {
-        display: none; 
-    }
+/* --- Estilos de la Columna de Formulario (Derecha - CELESTE) --- */
+.form-right {
+    flex-shrink: 0; 
+    min-width: 500px; 
+    height: 100vh;
+    
+    background: #e0f7fa; /* Fondo celeste/azul claro */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    box-sizing: border-box;
 }

@@ -1,125 +1,162 @@
-/* src/app/login/login.component.css (CÓDIGO CORREGIDO PARA COINCIDIR CON EL HTML) */
+/* src/app/auth/login/login.css (VERSION FINAL CON ESTABILIDAD Y ESTÉTICA MEJORADA) */
 
-/* 🔑 Clase corregida para el contenedor principal */
-.auth-wrapper {
+/* --- Estilos de la Página Contenedora --- */
+.login-page-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Para centrar verticalmente en la página */
-    background-color: #f0f2f5; 
-}
-
-/* 🔑 Clase corregida para el formulario (simula .login-container) */
-.auth-form {
-    max-width: 400px;
+    min-height: 100vh;
     width: 100%;
-    padding: 30px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    /* Fondo limpio y muy claro */
+    background: #f8f9fa; 
+    padding: 20px;
+}
+
+:host ::ng-deep .login-page-container {
+    background: none !important;
+}
+
+/* --- Estilos de la Tarjeta del Formulario (Form-Card) --- */
+.form-card {
     background-color: #ffffff;
-}
-
-h2 {
-    color: #1a73e8; 
+    padding: 40px;
+    border-radius: 12px;
+    
+    /* Sombra suave y moderna */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    border: 1px solid #e9ecef; /* Borde muy sutil */
+    
+    width: 100%;
+    max-width: 400px;
     text-align: center;
-    margin-bottom: 25px;
 }
 
-.form-group {
+/* --- Título del Formulario --- */
+.form-title {
+    font-family: Georgia, serif; 
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a237e;
+    margin-bottom: 30px;
+}
+
+/* --- Estilos de las Entradas (Inputs) --- */
+.input-group {
     margin-bottom: 15px;
+    text-align: left;
 }
 
-label {
+.input-group label {
     display: block;
     margin-bottom: 5px;
-    font-weight: bold;
-    color: #333;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #343a40;
 }
 
-/* Ajuste para input dentro del .form-group */
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+/* 🔑 BASE DE TODOS LOS INPUTS (CORRECCIÓN CLAVE DE ALINEACIÓN) */
+.form-card input,
+.form-card input[type="email"] { 
+    /* 🔑 CRÍTICO: Asegura que el padding no afecte el ancho total (hace que todos los inputs sean exactamente 100% de ancho). */
     box-sizing: border-box; 
-}
-
-/* 🔑 Estilos para el botón de Submit (clase .primary-action en el HTML) */
-.form-actions button.primary-action {
     width: 100%;
     padding: 10px;
-    background-color: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 4px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background-color: #ffffff; 
+    transition: border-color 0.2s, box-shadow 0.2s;
+    /* Eliminar cualquier margen interno que pueda causar descuadres */
+    margin: 0; 
+}
+
+/* Estilo de Foco (Limpiamos el borde feo por defecto) */
+.form-card input:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* --- ESTABILIDAD Y VISIBILIDAD DE CONTRASEÑA --- */
+
+.password-input-wrapper {
+    position: relative; 
+}
+
+/* Ajuste del padding para el ícono (solo en el wrapper, no en email) */
+.password-input-wrapper input {
+    padding-right: 40px; 
+}
+
+/* Posicionamiento del Ícono de Toggle */
+.password-toggle-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px; 
+    transform: translateY(-50%);
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-    transition: background-color 0.3s;
+    color: #6c757d; 
+    font-size: 1.2rem;
+    z-index: 10;
 }
 
-.primary-action:hover:not([disabled]) {
-    background-color: #0d47a1;
-}
 
-.primary-action:disabled {
-    background-color: #a0c3ff;
-    cursor: not-allowed;
-}
+/* --- ESTABILIDAD Y MENSAJES DE ERROR (CRÍTICO) --- */
 
-/* 🔑 Estilos para el botón de cambio de modo (toggle-mode-btn) */
-.toggle-mode-btn {
-    display: block;
-    width: 100%;
-    background: none;
-    border: none;
-    color: #1a73e8;
-    text-align: center;
-    cursor: pointer;
-    font-size: 1em;
-    padding: 10px;
-    margin-top: 15px;
-}
-
-.toggle-mode-btn:hover {
-    text-decoration: underline;
-}
-
-/* Estilos de validación y error */
-.validation-error {
-    color: #dc3545; 
-    font-size: 0.85em;
-    margin-top: 5px;
+/* Clase para reservar el espacio vertical del mensaje de error (evita el salto) */
+.error-message-placeholder {
+    min-height: 18px; 
+    margin-top: 2px;  
 }
 
 .error-message {
-    padding: 10px;
-    margin-bottom: 15px;
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 4px;
+    color: #dc3545; 
+    font-size: 0.8rem;
+    text-align: left;
+    font-weight: 500;
 }
 
-/* Estilos para el grupo de contraseña con el botón de visibilidad */
-.password-input-group {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
 
-.password-input-group input {
-    /* El input debe ocupar el espacio sin borde y con el padding ajustado */
-    flex-grow: 1;
+/* --- Estilos del Botón de Acción --- */
+.submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff; 
+    color: white;
     border: none;
-    padding: 10px;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+    margin-top: 15px;
 }
 
-.password-toggle {
+.submit-button:hover:not([disabled]) {
+    background-color: #0056b3; 
+}
+
+.submit-button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* --- ESTILOS DE ENLACE DE MODO --- */
+
+.toggle-link {
+    font-size: 0.95rem;
+    color: #6c757d; 
+    margin-top: 25px;
+}
+
+.toggle-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 700;
     cursor: pointer;
-    padding: 0 10px;
-    font-size: 1.2em;
+    transition: color 0.2s;
+}
+
+.toggle-link a:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }

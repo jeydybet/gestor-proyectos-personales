@@ -1,29 +1,32 @@
-// src/app/services/data.ts (CÓDIGO COMPLETO Y CORREGIDO)
+// src/app/services/data.ts (Versión FINAL y Segura con Filtro de Usuario)
 
 import { inject, Injectable } from '@angular/core';
 import { 
   Firestore, 
   collection, 
   query, 
-  where, 
+  where, // 🔑 Necesario para filtrar
   getDocs,
+  addDoc, // Necesario para crear
   orderBy,
   limit, 
-  // 🔑 IMPORTACIONES NECESARIAS PARA CREAR PROYECTO
-  addDoc,
 } from '@angular/fire/firestore';
-
-// 🔑 Importaciones de RxJS
-import { Observable, from, map, of } from 'rxjs'; 
+// 🔑 Importaciones de RxJS: from, of, map
+import { Observable, from, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+// 🔑 IMPORTAR el servicio de autenticación
+import { AuthService } from './auth'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  // Inyección del servicio de Firestore
   private firestore = inject(Firestore);
+  // 🔑 INYECTAR EL SERVICIO DE AUTENTICACIÓN
+  private authService = inject(AuthService); 
 
-  // 1. FUNCIÓN DE BÚSQUEDA
+  // 1. FUNCIÓN DE BÚSQUEDA (Mantener, pero debería filtrar por userId si es crítico)
+  // Por simplicidad, mantendremos la búsqueda sin filtro de usuario por ahora.
   searchData(queryText: string): Observable<any[]> {
     const startText = queryText;
     const endText = queryText + '\uf8ff'; 
@@ -38,16 +41,15 @@ export class DataService {
       limit(5)
     );
     
-    const tasks$ = from(getDocs(taskQuery)).pipe(
-        map(snapshot => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'Tarea' })))
+    return from(getDocs(taskQuery)).pipe(
+      map(snapshot => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'Tarea' })))
     );
-
-    return tasks$; 
   }
 
 
-  // 2. FUNCIÓN PARA EL RESUMEN DEL DASHBOARD
+  // 2. FUNCIÓN PARA EL RESUMEN DEL DASHBOARD (Mantener simulación o implementar lógica real)
   getDashboardSummary(): Observable<{ vencidas: number, hoy: number, completadasSemana: number }> {
+    // Aquí es donde harías queries reales y complejas de Firestore
     return of({
       vencidas: 3, 
       hoy: 7,
@@ -55,24 +57,47 @@ export class DataService {
     });
   }
 
-  // 3. FUNCIÓN PARA LA LISTA DE PROYECTOS (Simulación)
+  // 3. 🔑 FUNCIÓN getProjects() MODIFICADA: Filtra por el ID del usuario logueado
   getProjects(): Observable<any[]> {
-    return of([
-      { id: '1', name: 'Proyecto Landing Page', taskCount: 5, progress: 60, lastActivity: new Date() },
-      { id: '2', name: 'Migración Backend', taskCount: 12, progress: 25, lastActivity: new Date() },
-      { id: '3', name: 'Investigación Mercado Q4', taskCount: 0, progress: 100, lastActivity: new Date() },
-    ]);
-  }
-  
-  // 🔑 4. FUNCIÓN AÑADIDA: CREAR PROYECTO (Soluciona el error)
-  // DEBE ser 'async' para que el 'await' en el componente funcione.
-  async createProject(projectData: any): Promise<any> {
+    // Obtener el ID del usuario actual
+    const userId = this.authService.getCurrentUserId();
+    
+    // Si no hay usuario logueado, devuelve un Observable vacío inmediatamente
+    if (!userId) {
+        return of([]); 
+    }
+
     const projectsCollection = collection(this.firestore, 'projects');
     
-    // addDoc crea un nuevo documento con un ID generado automáticamente
-    const docRef = await addDoc(projectsCollection, projectData);
+    // 🔑 CONSTRUIR LA QUERY: Filtrar solo por el 'userId'
+    const projectQuery = query(
+        projectsCollection,
+        where('userId', '==', userId) // CRÍTICO: FILTRO DE SEGURIDAD
+    );
+
+    // Ejecutar la query y mapear los resultados (de Promise a Observable)
+    return from(getDocs(projectQuery)).pipe(
+        map(snapshot => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    );
+  }
+  
+  // 4. 🔑 FUNCIÓN createProject() MODIFICADA: Añade el ID de Usuario
+  async createProject(projectData: any): Promise<any> {
+    const userId = this.authService.getCurrentUserId();
     
-    console.log("Nuevo proyecto creado con ID:", docRef.id);
-    return { id: docRef.id, ...projectData };
+    if (!userId) {
+        throw new Error("No se puede crear un proyecto sin un usuario autenticado.");
+    }
+    
+    // 🔑 Añadir el ID del usuario al objeto de datos
+    const finalProjectData = {
+        ...projectData,
+        userId: userId // CRÍTICO: Guarda el ID del creador
+    };
+
+    const projectsCollection = collection(this.firestore, 'projects');
+    const docRef = await addDoc(projectsCollection, finalProjectData);
+    
+    return { id: docRef.id, ...finalProjectData };
   }
 }
