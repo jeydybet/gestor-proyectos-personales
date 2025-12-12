@@ -1,6 +1,7 @@
 /* src/app/nuevo-proyecto/nuevo-proyecto.css */
 
 .creation-form {
+    /* Nota: Usamos 'form' en el HTML, no 'creation-form'. Si usas 'form' en HTML, cambia este selector. */
     background-color: #f7f9fc;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -29,64 +30,82 @@
 }
 
 .form-group input[type="text"],
-.form-group textarea {
+.form-group textarea,
+.form-group select, /* Añadido select para el estado */
+.form-group input[type="date"] { /* Añadido date para fecha límite */
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+    box-sizing: border-box; 
     font-size: 1em;
     transition: border-color 0.3s;
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
-    border-color: #007bff; /* Color principal al enfocar */
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #007bff;
     outline: none;
 }
 
 .validation-error {
-    color: #dc3545; /* Rojo para errores */
+    color: #dc3545;
     font-size: 0.85em;
     margin-top: 5px;
 }
 
-/* Estilos para los botones de acción */
+/* ------------------------------------------------------------------- */
+/* 🔑 ESTILOS CORREGIDOS para coincidir con la imagen y el HTML */
+/* ------------------------------------------------------------------- */
+
 .form-actions {
     display: flex;
     justify-content: flex-end; /* Alinea los botones a la derecha */
     gap: 10px;
     margin-top: 20px;
+    padding-top: 15px; /* Separación de la línea superior */
+    border-top: 1px solid #eee; /* Opcional: añade una línea de separación */
 }
 
-.primary-action, .cancel-btn {
-    padding: 10px 20px;
+/* Estilo para el botón "Cancelar" (Cancel button) */
+.cancel-button {
+    /* Verde claro en la imagen */
+    background-color: #4CAF50; /* Verde principal */
+    color: white;
     border: none;
-    border-radius: 5px;
+    padding: 10px 20px;
+    border-radius: 4px;
     cursor: pointer;
     font-weight: 600;
     transition: background-color 0.3s;
 }
 
-.primary-action {
-    background-color: #007bff;
+.cancel-button:hover {
+    background-color: #45a049;
+}
+
+/* Estilo para el botón "Guardar Proyecto" (Submit button) */
+.submit-button {
+    /* Verde oscuro, el botón que tiene la acción principal */
+    background-color: #4CAF50; /* Verde principal */
     color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
 }
 
-.primary-action:hover:not([disabled]) {
-    background-color: #0056b3;
+.submit-button:hover:not([disabled]) {
+    background-color: #45a049;
 }
 
-.primary-action[disabled] {
-    background-color: #a0c3e7;
+.submit-button[disabled] {
+    /* Estilo para el botón GUARDAR PROYECTO cuando está DESHABILITADO (Gris claro) */
+    background-color: #ccc; /* Gris */
+    color: #888;
     cursor: not-allowed;
-}
-
-.cancel-btn {
-    background-color: #6c757d;
-    color: white;
-}
-
-.cancel-btn:hover {
-    background-color: #5a6268;
+    opacity: 0.8;
 }

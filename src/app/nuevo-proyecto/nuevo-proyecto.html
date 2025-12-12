@@ -1,28 +1,34 @@
-<<form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="creation-form">
-    <h3>Crear Nuevo Proyecto</h3>
-    
+<form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+    <h2>Crear Nuevo Proyecto</h2>
+
     <div class="form-group">
-        <label for="name">Nombre</label>
-        <input id="name" type="text" formControlName="name" placeholder="Ej: Rediseño de Landing Page">
-        <div 
-            *ngIf="projectForm.get('name')?.invalid && (projectForm.get('name')?.dirty || projectForm.get('name')?.touched)" 
-            class="validation-error">
-            El nombre es requerido y debe tener al menos 3 caracteres.
-        </div>
+        <label for="title">Nombre</label>
+        <input id="title" type="text" formControlName="title" placeholder="Ej: Rediseño de Landing Page">
     </div>
 
     <div class="form-group">
-        <label for="description">Descripción (Opcional)</label>
-        <textarea id="description" formControlName="description" rows="3" placeholder="Objetivo y alcance del proyecto."></textarea>
+        <label for="description">Descripción</label>
+        <textarea id="description" formControlName="description" placeholder="Objetivo y alcance del proyecto."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="status">Estado</label>
+        <select id="status" formControlName="status">
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Progreso">En Progreso</option>
+            <option value="Completado">Completado</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="dueDate">Fecha Límite (Opcional)</label>
+        <input id="dueDate" type="date" formControlName="dueDate">
     </div>
 
     <div class="form-actions">
-        <button type="button" class="cancel-btn" (click)="onCancel()">
-            Cancelar
-        </button>
-        
-        <button type="submit" [disabled]="projectForm.invalid || isLoading" class="save-project-btn primary-action">
-            {{ isLoading ? 'Guardando...' : 'Guardar Proyecto' }}
+        <button type="button" (click)="onCancel()" class="cancel-button">Cancelar</button>
+        <button type="submit" [disabled]="projectForm.invalid || isLoading" class="submit-button">
+            Guardar Proyecto
         </button>
     </div>
 </form>
