@@ -1,37 +1,47 @@
 <div class="login-container">
-    <h2>Iniciar Sesión</h2>
+    <div class="card">
+        <h2>Iniciar Sesión</h2>
 
-    <div *ngIf="error" class="error-message">
-        {{ error }}
-    </div>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        
-        <div class="form-group">
-            <label for="email">Correo Electrónico</label>
-            <input id="email" type="email" formControlName="email">
-            <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="validation-error">
-                <p *ngIf="loginForm.get('email')?.errors?.['required']">El correo es obligatorio.</p>
-                <p *ngIf="loginForm.get('email')?.errors?.['email']">Debe ser un correo electrónico válido.</p>
-            </div>
+        <div *ngIf="error" class="error-message">
+            {{ error }}
         </div>
 
-        <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input id="password" type="password" formControlName="password">
-            <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="validation-error">
-                <p *ngIf="loginForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</p>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input id="email" type="email" formControlName="email">
+                <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="validation-error">
+                    <p *ngIf="loginForm.get('email')?.errors?.['required']">El correo es obligatorio.</p>
+                    <p *ngIf="loginForm.get('email')?.errors?.['email']">Debe ser un correo electrónico válido.</p>
+                </div>
             </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="password-input-group">
+                    <input id="password" [type]="passwordVisible ? 'text' : 'password'" formControlName="password">
+                    
+                    <span class="password-toggle" (click)="togglePasswordVisibility()">
+                        {{ passwordVisible ? '👁️' : '🔒' }}
+                    </span>
+                </div>
+                
+                <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="validation-error">
+                    <p *ngIf="loginForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</p>
+                    <p *ngIf="loginForm.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres.</p>
+                </div>
+            </div>
+
+            <button type="submit" [disabled]="loginForm.invalid">
+                Acceder
+            </button>
+        </form>
+
+        <div class="register-link">
+            <p>¿No tienes cuenta? 
+                <a [routerLink]="['/register']">Regístrate aquí</a>
+            </p>
         </div>
-
-        <button type="submit" [disabled]="loginForm.invalid">
-            Acceder
-        </button>
-    </form>
-
-    <div class="register-link">
-        <p>¿No tienes cuenta? 
-            <a [routerLink]="['/register']">Regístrate aquí</a>
-        </p>
     </div>
 </div>

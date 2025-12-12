@@ -1,0 +1,16 @@
+<div class="sidebar-container">
+    <div class="app-logo">
+        <span class="logo-icon">🌸</span>
+        <h3>PROYECTOS</h3>
+    </div>
+
+    <nav class="nav-menu">
+        <a *ngFor="let item of navItems" 
+           [routerLink]="item.route"
+           routerLinkActive="active-link"
+           class="nav-item">
+            <i class="icon-{{ item.icon }}"></i> 
+            <span>{{ item.name }}</span>
+        </a>
+    </nav>
+</div>

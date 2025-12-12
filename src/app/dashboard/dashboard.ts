@@ -1,39 +1,41 @@
-// src/app/dashboard/dashboard.ts (Versión MINIMAL y COMPILABLE)
+// src/app/dashboard/dashboard.ts (CÓDIGO COMPLETO Y CORREGIDO)
 
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
-import { AuthService } from '../services/auth';
-import { Observable } from 'rxjs'; // Mantenemos Observable por si se usa en user$
-
-// ❌ COMENTADO: import { ProyectosService } from '../services/proyectos'; 
-// ❌ COMENTADO: import { Proyecto } from '../models/proyecto'; 
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth'; 
+import { SidebarComponent } from '../sidebar/sidebar'; 
+import { CommonModule } from '@angular/common'; // Asegúrate de importar CommonModule
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule], 
+  // CRÍTICO: Importar SidebarComponent para que sea un elemento conocido
+  imports: [SidebarComponent, CommonModule], 
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
+// La clase debe estar EXPORTADA y declarada SOLO UNA VEZ
 export class DashboardComponent {
   private authService = inject(AuthService);
-  // ❌ COMENTADO: private proyectosService = inject(ProyectosService); 
-  
-  // 🔑 REEMPLAZADO: Usamos un array simple en lugar del Observable de Proyectos para compilar
-  public proyectos: any[] = []; 
-  
-  public user$ = this.authService.currentUser$; 
+  private router = inject(Router);
 
-  onLogout() {
-    this.authService.logout(); 
+  // 🔑 VARIABLES DINÁMICAS INICIALIZADAS A CERO
+  tareasVencidas: number = 0;
+  tareasHoy: number = 0;
+  completadasSemana: number = 0;
+
+  // Función para Cerrar Sesión
+  async onLogout() {
+    try {
+      await this.authService.logout();
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
   }
-  
-  // ❌ COMENTADA: La función onDelete se elimina temporalmente para evitar el error TS2571
-  /*
-  async onDelete(id: string): Promise<void> {
-      if (confirm('¿Estás seguro de eliminar este proyecto?')) {
-          // Aquí irá el código del servicio de proyectos
-      }
-  }
-  */
+
+  // Futuro método para cargar datos:
+  // ngOnInit() {
+  //   this.cargarDatosDashboard();
+  // }
 }

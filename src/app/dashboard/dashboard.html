@@ -1,1 +1,41 @@
-<p>dashboard works!</p>
+<div class="main-layout">
+    <app-sidebar></app-sidebar> 
+
+    <div class="content-area">
+        <header class="header">
+            <div class="app-title">Gestor de Proyectos Personales</div>
+            
+            <input type="text" placeholder="Buscar proyectos o tareas..." class="search-input">
+
+            <div class="user-actions">
+                <span class="profile-icon">J</span> 
+                <button (click)="onLogout()" class="logout-btn">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <h2>Dashboard: Resumen General</h2>
+            
+            <div class="widgets-grid">
+                <div class="widget card red">
+                    <h3>Tareas Vencidas</h3>
+                    <p class="count">{{ tareasVencidas }}</p>
+                </div>
+                
+                <div class="widget card yellow">
+                    <h3>Para Hoy</h3>
+                    <p class="count">{{ tareasHoy }}</p>
+                </div>
+
+                <div class="widget card green">
+                    <h3>Completadas esta semana</h3>
+                    <p class="count">{{ completadasSemana }}</p>
+                </div>
+            </div>
+            
+            <p class="info-text">El resto de los widgets (Gráfico, Próximas Tareas) se implementarán en los siguientes pasos.</p>
+        </main>
+    </div>
+</div>

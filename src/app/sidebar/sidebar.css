@@ -1,0 +1,83 @@
+/* src/app/sidebar/sidebar.css */
+
+.sidebar-container {
+    width: 250px;
+    background-color: #2c3e50; /* Fondo oscuro (Anthracite) */
+    color: #ecf0f1;
+    padding: 20px 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+    position: sticky; 
+    top: 0;
+}
+
+.app-logo {
+    display: flex;
+    align-items: center;
+    padding: 0 20px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    margin-bottom: 20px;
+}
+
+.logo-icon {
+    font-size: 28px;
+    margin-right: 10px;
+}
+
+.app-logo h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Estilos de la navegación */
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #bdc3c7; 
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.nav-item:hover {
+    background-color: #34495e; 
+    color: white;
+}
+
+/* Estilos de los iconos */
+.nav-item i {
+    margin-right: 15px;
+    width: 20px; 
+    text-align: center;
+    font-size: 18px;
+}
+
+/* 🔑 Estilo para el enlace activo */
+.active-link {
+    background-color: #1a73e8; /* Color de acento (Azul principal) */
+    color: white !important;
+    border-radius: 4px;
+    margin: 0 10px;
+    padding: 12px 10px 12px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.active-link:hover {
+    background-color: #1a73e8;
+}
+
+/* SIMULACIÓN DE ICONOS (para visualización) */
+.icon-rocket::before { content: '🚀'; }
+.icon-folder::before { content: '📁'; }
+.icon-check::before { content: '✔️'; }
+.icon-calendar::before { content: '📅'; }
+.icon-settings::before { content: '⚙️'; }
