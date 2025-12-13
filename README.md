@@ -69,4 +69,4 @@ Este proyecto es una **Aplicación de una Sola Página (SPA)** desarrollada con 
 | Recurso | URL | Requisito de la Entrega |
 | :--- | :--- | :--- |
 | **Aplicación Publicada (Deploy)** | **`https://gestor-proyectos-personales.web.app`**
-| **Video de Demostración** | [**Pega aquí el enlace de tu video de 5 a 8 minutos**] 
+| **Manual de usuario en drive:**https://drive.google.com/drive/folders/1eIm96Bv--oSTNkybIZn-sZgI6uXc7R3I?usp=drive_link
