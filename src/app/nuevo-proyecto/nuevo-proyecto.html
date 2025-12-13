@@ -1,5 +1,6 @@
 <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
-    <h2>Crear Nuevo Proyecto</h2>
+    <!-- ← CAMBIAR: Título dinámico -->
+    <h2>{{ isEditMode ? 'Editar Proyecto' : 'Crear Nuevo Proyecto' }}</h2>
 
     <div class="form-group">
         <label for="title">Nombre</label>
@@ -28,7 +29,7 @@
     <div class="form-actions">
         <button type="button" (click)="onCancel()" class="cancel-button">Cancelar</button>
         <button type="submit" [disabled]="projectForm.invalid || isLoading" class="submit-button">
-            Guardar Proyecto
+            {{ isEditMode ? 'Actualizar Proyecto' : 'Guardar Proyecto' }}
         </button>
     </div>
 </form>

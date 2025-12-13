@@ -3,6 +3,9 @@ import {
   Firestore, 
   collection, 
   addDoc, 
+  updateDoc,
+  deleteDoc,
+  doc,
   CollectionReference,
   query,
   where,
@@ -15,7 +18,7 @@ import { AuthService } from './auth';
 export interface Project {
   id?: string;
   name: string;
-  title?: string; // ← Agregar esta línea para el error de template
+  title?: string;
   description: string;
   status: string;
   dueDate?: string;
@@ -23,7 +26,6 @@ export interface Project {
   createdAt: Date;
 }
 
-// ← ESTA INTERFAZ DEBE ESTAR EXPORTADA
 export interface DashboardSummary {
   totalProjects: number;
   activeProjects: number;
@@ -66,7 +68,6 @@ export class DataService {
     );
   }
 
-  // ← AGREGAR ESTE MÉTODO
   getDashboardSummary(): Observable<DashboardSummary> {
     return this.getProjects().pipe(
       map(projects => {
@@ -81,14 +82,12 @@ export class DataService {
         const completedProjects = projects.filter(p => p.status === 'Completado').length;
         const pendingProjects = projects.filter(p => p.status === 'Pendiente').length;
         
-        // Calcular tareas vencidas
         const tareasVencidas = projects.filter(p => {
           if (!p.dueDate || p.status === 'Completado') return false;
           const dueDate = new Date(p.dueDate);
           return dueDate < today;
         }).length;
 
-        // Calcular tareas para hoy
         const tareasHoy = projects.filter(p => {
           if (!p.dueDate || p.status === 'Completado') return false;
           const dueDate = new Date(p.dueDate);
@@ -96,7 +95,6 @@ export class DataService {
           return dueDate.getTime() === today.getTime();
         }).length;
 
-        // Calcular completadas en la semana
         const completadasSemana = projects.filter(p => {
           if (p.status !== 'Completado') return false;
           const createdDate = new Date(p.createdAt);
@@ -116,7 +114,6 @@ export class DataService {
     );
   }
 
-  // ← AGREGAR ESTE MÉTODO
   searchData(query: string): Observable<Project[]> {
     return this.getProjects().pipe(
       map(projects => {
@@ -151,6 +148,53 @@ export class DataService {
       console.log('Proyecto creado exitosamente');
     } catch (error) {
       console.error('Error al crear proyecto:', error);
+      throw error;
+    }
+  }
+
+  // ← NUEVO: Actualizar proyecto
+  async updateProject(projectId: string, projectData: Partial<Project>): Promise<void> {
+    try {
+      const user = await this.authService.getCurrentUser();
+      
+      if (!user) {
+        throw new Error('Usuario no autenticado');
+      }
+
+      const projectRef = doc(this.firestore, 'projects', projectId);
+      
+      // No actualizar campos que no deben cambiar
+      const { id, userId, createdAt, ...updateData } = projectData as any;
+      
+      console.log('Actualizando proyecto:', projectId, updateData);
+      
+      await updateDoc(projectRef, updateData);
+      
+      console.log('Proyecto actualizado exitosamente');
+    } catch (error) {
+      console.error('Error al actualizar proyecto:', error);
+      throw error;
+    }
+  }
+
+  // ← NUEVO: Eliminar proyecto
+  async deleteProject(projectId: string): Promise<void> {
+    try {
+      const user = await this.authService.getCurrentUser();
+      
+      if (!user) {
+        throw new Error('Usuario no autenticado');
+      }
+
+      const projectRef = doc(this.firestore, 'projects', projectId);
+      
+      console.log('Eliminando proyecto:', projectId);
+      
+      await deleteDoc(projectRef);
+      
+      console.log('Proyecto eliminado exitosamente');
+    } catch (error) {
+      console.error('Error al eliminar proyecto:', error);
       throw error;
     }
   }

@@ -1,35 +1,63 @@
 <div class="projects-container">
-    
-    <div class="projects-header">
+    <div class="header">
         <h2>Mis Proyectos ({{ totalProjects }})</h2>
         <button 
-            class="create-project-btn" 
+            class="new-project-btn" 
             (click)="toggleCreationMode()">
-            {{ isCreating ? 'Cancelar' : 'Nuevo Proyecto' }} 
+            {{ isCreating ? 'Cancelar' : 'Nuevo Proyecto' }}
         </button>
     </div>
 
     <div *ngIf="isCreating" class="creation-form-wrapper">
-        <app-nuevo-proyecto 
+        <app-nuevo-proyecto
             (creationCompleted)="handleCreationResult($event)">
         </app-nuevo-proyecto>
     </div>
 
-    <div *ngIf="!isCreating" class="project-list-grid">
-        
-        <div *ngIf="isLoading" class="loading-message">Cargando proyectos...</div>
-        
-        <div *ngIf="!isLoading && projects.length === 0" class="no-projects-message">
-            <p>¡Aún no tienes proyectos! Crea tu primer proyecto para empezar.</p>
-            <button class="create-project-btn primary-action" (click)="toggleCreationMode()">Comenzar</button>
+    <!-- ← NUEVO: Formulario de edición -->
+    <div *ngIf="isEditing && editingProject" class="creation-form-wrapper">
+        <app-nuevo-proyecto
+            [projectToEdit]="editingProject"
+            (creationCompleted)="handleCreationResult($event)">
+        </app-nuevo-proyecto>
+    </div>
+
+    <div *ngIf="!isCreating && !isEditing" class="project-list-grid">
+        <div *ngIf="projects.length === 0" class="empty-state">
+            <p>No tienes proyectos aún.</p>
+            <button class="btn primary-action" (click)="toggleCreationMode()">Comenzar</button>
         </div>
 
         <div *ngFor="let project of projects" class="project-card">
-            <div class="card-content">
+            <div class="project-content">
                 <h3>{{ project.name }}</h3>
                 <p>{{ project.description }}</p>
-                <span class="status-badge status-{{ project.status | lowercase }}">{{ project.status }}</span>
+                <span class="status" [ngClass]="project.status">{{ project.status }}</span>
+                <span *ngIf="project.dueDate" class="due-date">📅 {{ project.dueDate }}</span>
             </div>
+            
+            <!-- ← NUEVO: Botones de acción -->
+            <div class="project-actions">
+                <button class="btn-edit" (click)="editProject(project)" title="Editar">
+                    ✏️
+                </button>
+                <button class="btn-delete" (click)="confirmDelete(project)" title="Eliminar">
+                    🗑️
+                </button>
             </div>
+        </div>
+    </div>
+
+    <!-- ← NUEVO: Modal de confirmación de eliminación -->
+    <div *ngIf="showDeleteConfirm" class="modal-overlay" (click)="cancelDelete()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <h3>¿Eliminar proyecto?</h3>
+            <p>¿Estás seguro de que deseas eliminar "{{ projectToDelete?.name }}"?</p>
+            <p class="warning">Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+                <button class="btn-confirm-delete" (click)="deleteProject()">Eliminar</button>
+            </div>
+        </div>
     </div>
 </div>

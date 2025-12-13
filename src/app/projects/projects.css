@@ -1,98 +1,300 @@
-/* src/app/projects/projects.css */
-
 .projects-container {
     padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-.projects-header {
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
+    margin-bottom: 30px;
 }
 
-.projects-header h2 {
-    font-size: 1.8em;
-    color: #333;
+.header h2 {
+    font-size: 1.75rem;
+    color: #1f2937;
+    margin: 0;
 }
 
-.create-project-btn {
-    background-color: #28a745; /* Botón de éxito (verde) */
+.new-project-btn {
+    background: #10a37f;
     color: white;
-    padding: 10px 15px;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 8px;
     font-weight: 600;
-    transition: background-color 0.3s;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.create-project-btn:hover {
-    background-color: #1e7e34;
+.new-project-btn:hover {
+    background: #0d8968;
 }
 
-/* Estilos para la cuadrícula de proyectos */
+.creation-form-wrapper {
+    margin-bottom: 30px;
+}
+
 .project-list-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
 }
 
-.project-card {
-    background-color: white;
-    border: 1px solid #e0e0e0;
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.empty-state p {
+    font-size: 1.125rem;
+    margin-bottom: 20px;
+}
+
+.btn.primary-action {
+    background: #10a37f;
+    color: white;
+    border: none;
+    padding: 12px 32px;
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn.primary-action:hover {
+    background: #0d8968;
+}
+
+/* Tarjeta de proyecto */
+.project-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .project-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-.project-card h3 {
-    font-size: 1.3em;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #007bff;
+/* Header con título y botones */
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
 }
 
-.tasks-count {
-    font-size: 0.9em;
-    color: #6c757d;
-    margin-bottom: 15px;
+.project-header h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+    font-weight: 600;
+    flex: 1;
 }
 
-/* Barra de Progreso (Simulación) */
-.progress-bar {
-    background-color: #e9ecef;
-    border-radius: 50px;
-    height: 10px;
-    margin-bottom: 10px;
-    overflow: hidden;
+.project-actions-header {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
-.progress {
-    height: 100%;
-    background-color: #28a745;
-    transition: width 0.4s ease;
-    border-radius: inherit;
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-edit {
+    background: #e0f2fe;
+}
+
+.btn-edit:hover {
+    background: #bae6fd;
+    transform: scale(1.1);
+}
+
+.btn-delete {
+    background: #fee2e2;
+}
+
+.btn-delete:hover {
+    background: #fecaca;
+    transform: scale(1.1);
+}
+
+/* Descripción */
+.project-description {
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+}
+
+/* Footer con estado y fecha */
+.project-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.status.Pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status.EnProgreso {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status.Completado {
+    background: #d1fae5;
+    color: #065f46;
 }
 
 .due-date {
-    display: block;
-    font-size: 0.8em;
-    color: #888;
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
 }
 
-/* Mensajes de estado */
-.loading-message, .no-projects-message {
-    text-align: center;
-    padding: 40px;
-    grid-column: 1 / -1; /* Ocupa todo el ancho en la cuadrícula */
-    color: #6c757d;
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h3 {
+    margin: 0 0 16px 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.modal-content p {
+    color: #6b7280;
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.modal-content .warning {
+    color: #dc2626;
+    font-weight: 600;
+    margin-bottom: 24px;
+    padding: 12px;
+    background: #fee2e2;
+    border-radius: 8px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-cancel,
+.btn-confirm-delete {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-size: 15px;
+}
+
+.btn-cancel {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-cancel:hover {
+    background: #e5e7eb;
+}
+
+.btn-confirm-delete {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-confirm-delete:hover {
+    background: #b91c1c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .project-list-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    
+    .new-project-btn {
+        width: 100%;
+    }
 }
