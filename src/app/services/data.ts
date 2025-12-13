@@ -12,7 +12,7 @@ import {
   orderBy
 } from '@angular/fire/firestore';
 import { collectionData } from 'rxfire/firestore';
-import { Observable, of, switchMap, filter, take, map } from 'rxjs';
+import { Observable, of, switchMap, filter, map } from 'rxjs'; // ← AGREGAR map
 import { AuthService } from './auth';
 
 export interface Project {
@@ -51,11 +51,13 @@ export class DataService {
   getProjects(): Observable<Project[]> {
     return this.authService.user$.pipe(
       filter(user => user !== null),
-      take(1),
       switchMap(user => {
         if (!user) {
+          console.log('❌ No hay usuario autenticado');
           return of([]);
         }
+
+        console.log('✅ Cargando proyectos para usuario:', user.uid);
 
         const q = query(
           this.projectsCollection,
@@ -70,7 +72,9 @@ export class DataService {
 
   getDashboardSummary(): Observable<DashboardSummary> {
     return this.getProjects().pipe(
-      map(projects => {
+      map((projects: Project[]) => {
+        console.log('📊 Calculando resumen con', projects.length, 'proyectos');
+        
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
@@ -78,24 +82,24 @@ export class DataService {
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
         const totalProjects = projects.length;
-        const activeProjects = projects.filter(p => p.status === 'En Progreso').length;
-        const completedProjects = projects.filter(p => p.status === 'Completado').length;
-        const pendingProjects = projects.filter(p => p.status === 'Pendiente').length;
+        const activeProjects = projects.filter((p: Project) => p.status === 'En Progreso').length;
+        const completedProjects = projects.filter((p: Project) => p.status === 'Completado').length;
+        const pendingProjects = projects.filter((p: Project) => p.status === 'Pendiente').length;
         
-        const tareasVencidas = projects.filter(p => {
+        const tareasVencidas = projects.filter((p: Project) => {
           if (!p.dueDate || p.status === 'Completado') return false;
           const dueDate = new Date(p.dueDate);
           return dueDate < today;
         }).length;
 
-        const tareasHoy = projects.filter(p => {
+        const tareasHoy = projects.filter((p: Project) => {
           if (!p.dueDate || p.status === 'Completado') return false;
           const dueDate = new Date(p.dueDate);
           dueDate.setHours(0, 0, 0, 0);
           return dueDate.getTime() === today.getTime();
         }).length;
 
-        const completadasSemana = projects.filter(p => {
+        const completadasSemana = projects.filter((p: Project) => {
           if (p.status !== 'Completado') return false;
           const createdDate = new Date(p.createdAt);
           return createdDate >= oneWeekAgo;
@@ -116,9 +120,9 @@ export class DataService {
 
   searchData(query: string): Observable<Project[]> {
     return this.getProjects().pipe(
-      map(projects => {
+      map((projects: Project[]) => {
         const searchTerm = query.toLowerCase();
-        return projects.filter(project => 
+        return projects.filter((project: Project) => 
           project.name.toLowerCase().includes(searchTerm) ||
           project.description.toLowerCase().includes(searchTerm) ||
           (project.title && project.title.toLowerCase().includes(searchTerm))
@@ -141,18 +145,17 @@ export class DataService {
         createdAt: new Date()
       };
 
-      console.log('Intentando crear proyecto:', newProject);
+      console.log('✅ Creando proyecto:', newProject);
       
-      await addDoc(this.projectsCollection, newProject);
+      const docRef = await addDoc(this.projectsCollection, newProject);
       
-      console.log('Proyecto creado exitosamente');
+      console.log('✅ Proyecto creado con ID:', docRef.id);
     } catch (error) {
-      console.error('Error al crear proyecto:', error);
+      console.error('❌ Error al crear proyecto:', error);
       throw error;
     }
   }
 
-  // ← NUEVO: Actualizar proyecto
   async updateProject(projectId: string, projectData: Partial<Project>): Promise<void> {
     try {
       const user = await this.authService.getCurrentUser();
@@ -163,21 +166,19 @@ export class DataService {
 
       const projectRef = doc(this.firestore, 'projects', projectId);
       
-      // No actualizar campos que no deben cambiar
       const { id, userId, createdAt, ...updateData } = projectData as any;
       
-      console.log('Actualizando proyecto:', projectId, updateData);
+      console.log('✅ Actualizando proyecto:', projectId, updateData);
       
       await updateDoc(projectRef, updateData);
       
-      console.log('Proyecto actualizado exitosamente');
+      console.log('✅ Proyecto actualizado exitosamente');
     } catch (error) {
-      console.error('Error al actualizar proyecto:', error);
+      console.error('❌ Error al actualizar proyecto:', error);
       throw error;
     }
   }
 
-  // ← NUEVO: Eliminar proyecto
   async deleteProject(projectId: string): Promise<void> {
     try {
       const user = await this.authService.getCurrentUser();
@@ -188,13 +189,13 @@ export class DataService {
 
       const projectRef = doc(this.firestore, 'projects', projectId);
       
-      console.log('Eliminando proyecto:', projectId);
+      console.log('✅ Eliminando proyecto:', projectId);
       
       await deleteDoc(projectRef);
       
-      console.log('Proyecto eliminado exitosamente');
+      console.log('✅ Proyecto eliminado exitosamente');
     } catch (error) {
-      console.error('Error al eliminar proyecto:', error);
+      console.error('❌ Error al eliminar proyecto:', error);
       throw error;
     }
   }
