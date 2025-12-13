@@ -1,83 +1,76 @@
-// src/app/services/auth.ts (CÓDIGO COMPLETO FINAL Y ROBUSTO)
-
-import { Injectable } from '@angular/core'; // Ya no necesitamos 'inject'
-import { 
-    Auth, 
-    user, 
-    User, 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword, 
-    signOut 
-} from '@angular/fire/auth';
-import { Observable, lastValueFrom } from 'rxjs'; 
-import { shareReplay } from 'rxjs/operators';
-import { Router } from '@angular/router'; // Importado para ser inyectado
+import { Injectable, inject } from '@angular/core';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, User } from '@angular/fire/auth';
+import { Router } from '@angular/router';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class AuthService {
+  private auth = inject(Auth);
+  private router = inject(Router);
+  
+  // CLAVE: Usar BehaviorSubject para garantizar que siempre haya un valor disponible
+  private userSubject = new BehaviorSubject<User | null>(null);
+  public user$: Observable<User | null> = this.userSubject.asObservable();
+  
+  // Flag para saber si la autenticación ya fue inicializada
+  private authInitialized = false;
+
+  constructor() {
+    // Inicializar el listener de autenticación
+    onAuthStateChanged(this.auth, (user) => {
+      this.userSubject.next(user);
+      this.authInitialized = true;
+    });
+  }
+
+  async getCurrentUser(): Promise<User | null> {
+    // Si ya tenemos un usuario, devolverlo inmediatamente
+    if (this.userSubject.value) {
+      return this.userSubject.value;
+    }
     
-    // 1. Propiedades inyectadas
-    public user$: Observable<User | null>;
-
-    // 🔑 CLAVE: Inyección Clásica en el constructor
-    constructor(
-        private auth: Auth, 
-        private router: Router // Si usas el router para redirigir después del logout
-    ) {
-        // Inicialización del observable DENTRO del constructor
-        this.user$ = user(this.auth).pipe(
-            shareReplay({ bufferSize: 1, refCount: true })
-        );
-    }
-
-    // =========================================================
-    // MÉTODOS DE AUTENTICACIÓN
-    // =========================================================
-
-    async login(email: string, password: string): Promise<User> {
-        try {
-            const result = await signInWithEmailAndPassword(this.auth, email, password);
-            return result.user;
-        } catch (error) {
-            console.error("Error en login:", error);
-            throw error;
+    // Si no, esperar a que la autenticación se inicialice
+    return new Promise((resolve) => {
+      const checkAuth = () => {
+        if (this.authInitialized) {
+          resolve(this.userSubject.value);
+        } else {
+          setTimeout(checkAuth, 50);
         }
-    }
+      };
+      checkAuth();
+    });
+  }
 
-    async register(email: string, password: string): Promise<User> {
-        try {
-            const result = await createUserWithEmailAndPassword(this.auth, email, password);
-            return result.user;
-        } catch (error) {
-            console.error("Error en registro:", error);
-            throw error;
-        }
+  async login(email: string, password: string) {
+    try {
+      await signInWithEmailAndPassword(this.auth, email, password);
+      this.router.navigate(['/projects']);
+    } catch (error) {
+      console.error('Error en login:', error);
+      throw error;
     }
+  }
 
-    async logout(): Promise<void> {
-        await signOut(this.auth);
-        this.router.navigate(['/auth/login']); // Redirigir al login
+  async register(email: string, password: string) {
+    try {
+      await createUserWithEmailAndPassword(this.auth, email, password);
+      this.router.navigate(['/projects']);
+    } catch (error) {
+      console.error('Error en registro:', error);
+      throw error;
     }
+  }
 
-    // =========================================================
-    // MÉTODOS DE OBTENCIÓN DE ESTADO (CRÍTICO)
-    // =========================================================
-
-    /**
-     * Devuelve el objeto de usuario completo (User) de forma asíncrona.
-     */
-    async getCurrentUser(): Promise<User | null> {
-        // lastValueFrom es la mejor opción aquí
-        return lastValueFrom(this.user$); 
+  async logout() {
+    try {
+      await signOut(this.auth);
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.error('Error en logout:', error);
+      throw error;
     }
-
-    /**
-     * Devuelve solo el UID de forma síncrona (si está disponible).
-     */
-    getCurrentUserId(): string | null {
-        // Esta propiedad es segura porque Angular/Firebase la mantiene actualizada
-        return this.auth.currentUser ? this.auth.currentUser.uid : null;
-    }
+  }
 }

@@ -1,130 +1,157 @@
-// src/app/services/data.ts (CÓDIGO COMPLETO Y CORREGIDO FINAL SEGURO)
-
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { 
-    Firestore, 
-    collection, 
-    query, 
-    where, 
-    addDoc,
-    doc, 
-    setDoc,
-    deleteDoc,
-    CollectionReference,
-    collectionData 
+  Firestore, 
+  collection, 
+  addDoc, 
+  CollectionReference,
+  query,
+  where,
+  orderBy
 } from '@angular/fire/firestore';
+import { collectionData } from 'rxfire/firestore';
+import { Observable, of, switchMap, filter, take, map } from 'rxjs';
+import { AuthService } from './auth';
 
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators'; 
-import { AuthService } from './auth'; 
-
-// =========================================================
-// DEFINICIÓN DE LA INTERFAZ
-// =========================================================
 export interface Project {
-    id?: string; 
-    userId: string; 
-    title: string;
-    description: string;
-    status: 'Pendiente' | 'En Progreso' | 'Completado';
-    dueDate?: Date | string; 
-    createdAt: Date | string; 
+  id?: string;
+  name: string;
+  title?: string; // ← Agregar esta línea para el error de template
+  description: string;
+  status: string;
+  dueDate?: string;
+  userId: string;
+  createdAt: Date;
 }
 
+// ← ESTA INTERFAZ DEBE ESTAR EXPORTADA
+export interface DashboardSummary {
+  totalProjects: number;
+  activeProjects: number;
+  completedProjects: number;
+  pendingProjects: number;
+  tareasVencidas: number;
+  tareasHoy: number;
+  completadasSemana: number;
+}
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class DataService {
-    // 1. Declaración de propiedades
-    private firestore: Firestore;
-    private authService: AuthService; 
-    private projectsCollection: CollectionReference<Project>;
+  private firestore = inject(Firestore);
+  private authService = inject(AuthService);
+  private projectsCollection: CollectionReference;
 
-    // 2. Inicialización segura en el constructor
-    constructor() {
-        this.firestore = inject(Firestore);
-        this.authService = inject(AuthService); 
-        this.projectsCollection = collection(this.firestore, 'projects') as CollectionReference<Project>;
-    }
-    
-    // =========================================================
-    // 1. PROYECTOS: OPERACIONES CRUD
-    // =========================================================
+  constructor() {
+    this.projectsCollection = collection(this.firestore, 'projects');
+  }
 
-    /**
-     * Obtiene solo los proyectos que pertenecen al usuario autenticado (Filtro por UID).
-     */
-    getProjects(): Observable<Project[]> {
-        return this.authService.user$.pipe(
-            switchMap(user => {
-                const userId = user?.uid;
-                
-                if (userId) {
-                    const q = query(
-                        this.projectsCollection,
-                        where('userId', '==', userId) 
-                    );
-                    
-                    return collectionData(q, { idField: 'id' }) as Observable<Project[]>;
-                } else {
-                    return of([]); 
-                }
-            })
-        );
-    }
-    
-    /**
-     * Crea un nuevo proyecto, adjuntando el UID y la fecha de creación.
-     */
-    async createProject(projectData: Omit<Project, 'id' | 'userId' | 'createdAt'>): Promise<any> {
-        const user = await this.authService.getCurrentUser();
-        
+  getProjects(): Observable<Project[]> {
+    return this.authService.user$.pipe(
+      filter(user => user !== null),
+      take(1),
+      switchMap(user => {
         if (!user) {
-            throw new Error("No se puede crear un proyecto sin un usuario autenticado.");
+          return of([]);
         }
+
+        const q = query(
+          this.projectsCollection,
+          where('userId', '==', user.uid),
+          orderBy('createdAt', 'desc')
+        );
+
+        return collectionData(q, { idField: 'id' }) as Observable<Project[]>;
+      })
+    );
+  }
+
+  // ← AGREGAR ESTE MÉTODO
+  getDashboardSummary(): Observable<DashboardSummary> {
+    return this.getProjects().pipe(
+      map(projects => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         
-        const finalProjectData = {
-            ...projectData,
-            userId: user.uid, 
-            createdAt: new Date()
+        const oneWeekAgo = new Date(today);
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+        const totalProjects = projects.length;
+        const activeProjects = projects.filter(p => p.status === 'En Progreso').length;
+        const completedProjects = projects.filter(p => p.status === 'Completado').length;
+        const pendingProjects = projects.filter(p => p.status === 'Pendiente').length;
+        
+        // Calcular tareas vencidas
+        const tareasVencidas = projects.filter(p => {
+          if (!p.dueDate || p.status === 'Completado') return false;
+          const dueDate = new Date(p.dueDate);
+          return dueDate < today;
+        }).length;
+
+        // Calcular tareas para hoy
+        const tareasHoy = projects.filter(p => {
+          if (!p.dueDate || p.status === 'Completado') return false;
+          const dueDate = new Date(p.dueDate);
+          dueDate.setHours(0, 0, 0, 0);
+          return dueDate.getTime() === today.getTime();
+        }).length;
+
+        // Calcular completadas en la semana
+        const completadasSemana = projects.filter(p => {
+          if (p.status !== 'Completado') return false;
+          const createdDate = new Date(p.createdAt);
+          return createdDate >= oneWeekAgo;
+        }).length;
+
+        return {
+          totalProjects,
+          activeProjects,
+          completedProjects,
+          pendingProjects,
+          tareasVencidas,
+          tareasHoy,
+          completadasSemana
         };
+      })
+    );
+  }
 
-        const docRef = await addDoc(this.projectsCollection, finalProjectData);
-        
-        return { id: docRef.id, ...finalProjectData };
-    }
-    
-    async updateProject(project: Project): Promise<void> {
-        const user = await this.authService.getCurrentUser();
-        if (!user || user.uid !== project.userId) {
-            throw new Error("Acceso denegado: No puedes modificar proyectos de otros usuarios.");
-        }
+  // ← AGREGAR ESTE MÉTODO
+  searchData(query: string): Observable<Project[]> {
+    return this.getProjects().pipe(
+      map(projects => {
+        const searchTerm = query.toLowerCase();
+        return projects.filter(project => 
+          project.name.toLowerCase().includes(searchTerm) ||
+          project.description.toLowerCase().includes(searchTerm) ||
+          (project.title && project.title.toLowerCase().includes(searchTerm))
+        );
+      })
+    );
+  }
 
-        // 🔑 NOTA: Aquí se usa 'this.firestore' para crear la referencia del documento, que ahora está inyectado
-        const docRef = doc(this.firestore, 'projects', project.id!);
-        return setDoc(docRef, project as Project);
-    }
-    
-    async deleteProject(projectId: string, projectUserId: string): Promise<void> {
-        const user = await this.authService.getCurrentUser();
-        if (!user || user.uid !== projectUserId) {
-            throw new Error("Acceso denegado: No puedes eliminar proyectos de otros usuarios.");
-        }
-        
-        // 🔑 NOTA: Aquí se usa 'this.firestore' para crear la referencia del documento
-        const docRef = doc(this.firestore, 'projects', projectId);
-        return deleteDoc(docRef);
-    }
+  async createProject(projectData: Omit<Project, 'id' | 'userId' | 'createdAt'>): Promise<void> {
+    try {
+      const user = await this.authService.getCurrentUser();
+      
+      if (!user) {
+        throw new Error('Usuario no autenticado');
+      }
 
-    // =========================================================
-    // 2. OTROS MÉTODOS SIMULADOS
-    // =========================================================
-    getDashboardSummary(): Observable<{ vencidas: number, hoy: number, completadasSemana: number }> {
-        return of({ vencidas: 3, hoy: 7, completadasSemana: 15 });
+      const newProject = {
+        ...projectData,
+        userId: user.uid,
+        createdAt: new Date()
+      };
+
+      console.log('Intentando crear proyecto:', newProject);
+      
+      await addDoc(this.projectsCollection, newProject);
+      
+      console.log('Proyecto creado exitosamente');
+    } catch (error) {
+      console.error('Error al crear proyecto:', error);
+      throw error;
     }
-    
-    searchData(queryText: string): Observable<any[]> {
-        return of([]); 
-    }
+  }
 }
