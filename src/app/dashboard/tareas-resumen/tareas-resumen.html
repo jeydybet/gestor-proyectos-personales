@@ -1,1 +1,133 @@
-<p>tareas-resumen works!</p>
+<div class="tareas-resumen-wrapper">
+  <!-- Encabezado con título -->
+  <div class="header">
+    <h2 class="main-title">📋 Resumen de Tareas</h2>
+    <p class="subtitle">Organiza tus proyectos pendientes</p>
+  </div>
+
+  <!-- Sistema de Pestañas -->
+  <div class="tabs-container">
+    <button 
+      class="tab-button"
+      [class.active]="activeTab === 'today'"
+      (click)="setActiveTab('today')">
+      <span class="tab-icon">📅</span>
+      <span class="tab-text">Tareas de Hoy</span>
+    </button>
+    
+    <button 
+      class="tab-button"
+      [class.active]="activeTab === 'upcoming'"
+      (click)="setActiveTab('upcoming')">
+      <span class="tab-icon">🔜</span>
+      <span class="tab-text">Próximas Tareas</span>
+    </button>
+  </div>
+
+  <!-- Contenido de las Pestañas -->
+  <div class="tab-content">
+    
+    <!-- PESTAÑA: Tareas de Hoy -->
+    <div *ngIf="activeTab === 'today'" class="tab-panel">
+      <ng-container *ngIf="tasksToday$ | async as tasksToday; else loadingTemplate">
+        <!-- Lista vacía -->
+        <div *ngIf="tasksToday.length === 0" class="empty-state">
+          <div class="empty-icon">✨</div>
+          <h3 class="empty-title">No hay tareas para hoy</h3>
+          <p class="empty-message">¡Perfecto! No tienes proyectos pendientes para el día de hoy.</p>
+        </div>
+
+        <!-- Lista con tareas -->
+        <div *ngIf="tasksToday.length > 0" class="tasks-container">
+          <div class="tasks-count">
+            <span class="count-badge">{{ tasksToday.length }}</span>
+            <span class="count-text">{{ tasksToday.length === 1 ? 'tarea' : 'tareas' }} para hoy</span>
+          </div>
+
+          <div class="tasks-list">
+            <div 
+              *ngFor="let task of tasksToday; trackBy: trackByProjectId"
+              class="task-card">
+              
+              <div class="task-header">
+                <h3 class="task-name">{{ task.name || task.title }}</h3>
+                <span 
+                  class="task-status"
+                  [ngClass]="getStatusClass(task.status)">
+                  {{ task.status }}
+                </span>
+              </div>
+
+              <p *ngIf="task.description" class="task-description">
+                {{ task.description }}
+              </p>
+
+              <div class="task-footer">
+                <div class="task-date">
+                  <span class="date-icon">🕐</span>
+                  <span class="date-text">{{ toDate(task.dueDate) | date:'shortTime' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- PESTAÑA: Próximas Tareas -->
+    <div *ngIf="activeTab === 'upcoming'" class="tab-panel">
+      <ng-container *ngIf="upcomingTasks$ | async as upcomingTasks; else loadingTemplate">
+        <!-- Lista vacía -->
+        <div *ngIf="upcomingTasks.length === 0" class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3 class="empty-title">No hay próximas tareas</h3>
+          <p class="empty-message">No tienes proyectos programados para los próximos días.</p>
+        </div>
+
+        <!-- Lista con tareas -->
+        <div *ngIf="upcomingTasks.length > 0" class="tasks-container">
+          <div class="tasks-count">
+            <span class="count-badge">{{ upcomingTasks.length }}</span>
+            <span class="count-text">{{ upcomingTasks.length === 1 ? 'tarea próxima' : 'tareas próximas' }}</span>
+          </div>
+
+          <div class="tasks-list">
+            <div 
+              *ngFor="let task of upcomingTasks; trackBy: trackByProjectId"
+              class="task-card">
+              
+              <div class="task-header">
+                <h3 class="task-name">{{ task.name || task.title }}</h3>
+                <span 
+                  class="task-status"
+                  [ngClass]="getStatusClass(task.status)">
+                  {{ task.status }}
+                </span>
+              </div>
+
+              <p *ngIf="task.description" class="task-description">
+                {{ task.description }}
+              </p>
+
+              <div class="task-footer">
+                <div class="task-date">
+                  <span class="date-icon">📅</span>
+                  <span class="date-text">{{ toDate(task.dueDate) | date:'mediumDate' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+  </div>
+
+  <!-- Template de Carga -->
+  <ng-template #loadingTemplate>
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p class="loading-text">Cargando tareas...</p>
+    </div>
+  </ng-template>
+</div>

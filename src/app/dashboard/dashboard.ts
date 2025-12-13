@@ -31,12 +31,6 @@ export class DashboardComponent implements OnInit {
   searchControl = new FormControl(''); 
   searchResults: any[] = []; 
 
-  // 🛑 ELIMINADAS: Variables y lógica de widgets han sido movidas a DashboardOverviewComponent
-  // --------------------------------------------------------------------------------------
-  // 🛑 tareasVencidas: number = 0;
-  // 🛑 tareasHoy: number = 0;
-  // 🛑 completadasSemana: number = 0;
-  // --------------------------------------------------------------------------------------
 
   ngOnInit(): void {
     // 1. Configuración de la Búsqueda en Tiempo Real
@@ -61,10 +55,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // 🛑 ELIMINADO: Todo el método loadDashboardSummary() ha sido MOVIMIENTO
-  // private loadDashboardSummary(): void { ... }
-
-  // Función para Cerrar Sesión (Se mantiene)
   async onLogout() {
     try {
       await this.authService.logout();
