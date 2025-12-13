@@ -1,0 +1,62 @@
+<div class="settings-container">
+  
+  <div class="header">
+    <h2><i class="fas fa-cog"></i> Configuración del Sistema</h2>
+  </div>
+
+  <div class="settings-layout">
+    
+    <div class="tabs-menu">
+      <a 
+        class="tab" 
+        [class.active]="activeTab === 'profile'" 
+        (click)="setActiveTab('profile')"
+      >
+        <i class="fas fa-user-circle"></i> Perfil y Cuenta
+      </a>
+      <a 
+        class="tab" 
+        [class.active]="activeTab === 'preferences'" 
+        (click)="setActiveTab('preferences')"
+      >
+        <i class="fas fa-sliders-h"></i> Preferencias de la App
+      </a>
+      <a 
+        class="tab" 
+        [class.active]="activeTab === 'security'" 
+        (click)="setActiveTab('security')"
+      >
+        <i class="fas fa-shield-alt"></i> Seguridad
+      </a>
+    </div>
+
+    <div class="settings-panel">
+      
+      <ng-container *ngIf="activeTab === 'profile'">
+        <h3>Perfil del Usuario</h3>
+        <p>Gestiona tu información personal y cuenta.</p>
+        
+        <div class="setting-item">
+          <h4>Datos de la Cuenta</h4>
+          <p>Nombre, Correo (solo lectura).</p>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="activeTab === 'preferences'">
+        <h3>Preferencias de la Aplicación</h3>
+        <p>Ajustes como tema oscuro, notificaciones, etc.</p>
+        </ng-container>
+
+      <ng-container *ngIf="activeTab === 'security'">
+        <h3>Seguridad</h3>
+        <p>Opciones de seguridad crítica.</p>
+        <div class="setting-item">
+          <h4>Cambiar Contraseña</h4>
+          <p>Asegura tu cuenta actualizando tu contraseña regularmente.</p>
+          <button class="btn btn-primary">Actualizar Contraseña</button>
+        </div>
+      </ng-container>
+      
+    </div>
+  </div>
+</div>

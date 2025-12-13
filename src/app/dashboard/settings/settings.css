@@ -1,0 +1,88 @@
+.settings-container {
+  padding: 20px;
+}
+
+.header h2 {
+  color: var(--primary-color, #1a202c);
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.settings-layout {
+  display: flex;
+  gap: 40px; /* Esto separará el menú de pestañas del contenido */
+}
+
+/* --- Menú de Pestañas (Sidebar) --- */
+.tabs-menu {
+  flex-shrink: 0;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  color: #555;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.tab i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+.tab:hover {
+  background-color: #f5f5f5;
+}
+
+/* src/app/dashboard/settings/settings.component.css */
+
+.tab.active {
+  /* Mantenemos el fondo blanco o un gris muy claro para el estado activo */
+  background-color: #f0f0f0; /* Un gris muy suave para marcarlo */
+  
+  /* 🟢 CORRECCIÓN: Usamos un color de texto oscuro para que se vea */
+  color: #333; /* Color de texto oscuro, o usa el color primario: var(--primary-color) */
+  font-weight: 600; /* Le damos más peso */
+  
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Panel de Contenido --- */
+.settings-panel {
+  flex-grow: 1;
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.settings-panel h3 {
+  color: var(--primary-color-dark, #0f172a);
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.setting-item {
+  margin-bottom: 25px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.setting-item h4 {
+  margin-top: 0;
+  color: #333;
+}
