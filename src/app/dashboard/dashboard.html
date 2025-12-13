@@ -5,10 +5,12 @@
         <header class="header">
             <div class="app-title">Gestor de Proyectos Personales</div>
             
-            <input type="text" 
-                   [formControl]="searchControl" 
-                   placeholder="Buscar proyectos o tareas..." 
-                   class="search-input">
+            <form class="search-form-header" (submit)="onSearchSubmit()">
+                <input type="text" 
+                       [formControl]="searchControl" 
+                       placeholder="Buscar proyectos o tareas..." 
+                       class="search-input">
+                </form>
 
             <div class="user-actions">
                 <span class="profile-icon">J</span> 
@@ -21,18 +23,29 @@
         <main class="content-body">
             
             <div *ngIf="searchControl.value" class="search-results-container">
-                <h3 *ngIf="searchControl.value.length >= 3">Resultados de la Búsqueda para: "{{ searchControl.value }}"</h3>
-                <div *ngIf="searchResults.length === 0 && searchControl.value.length >= 3" class="no-results">
-                    No se encontraron coincidencias.
-                </div>
-                <ul class="results-list">
-                    <li *ngFor="let result of searchResults" class="result-item">
-                        🔍 {{ result.title }} ({{ result.type }})
-                    </li>
-                </ul>
-            </div>
+                <div *ngIf="searchControl.value.length >= 2" class="live-results">
+                    <h3 *ngIf="searchControl.value.length >= 2">Resultados en vivo para: "{{ searchControl.value }}"</h3>
+                    
+                    <ul class="results-list">
+                        <li *ngFor="let result of searchResults" class="result-item">
+                            🔍 {{ result.name }}
+                        </li>
+                    </ul>
 
-            <div *ngIf="!searchControl.value">
+                    <button 
+                        (click)="onSearchSubmit()" 
+                        class="btn-ver-todos">
+                        Ver todos los resultados de la búsqueda
+                    </button>
+
+                    <div *ngIf="searchResults.length === 0" class="no-results">
+                        No se encontraron coincidencias.
+                    </div>
+                </div>
+
+                </div>
+
+            <div *ngIf="!searchControl.value || !router.url.includes('/projects?q=')">
                 <router-outlet></router-outlet> 
             </div>
             
