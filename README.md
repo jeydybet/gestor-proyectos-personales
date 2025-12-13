@@ -1,59 +1,72 @@
-# GestorProyectosPersonales
+# 🧑‍💻 Gestor de Proyectos Personales
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.10.
+## 📝 Descripción del Proyecto
 
-## Development server
+Este proyecto es una **Aplicación de una Sola Página (SPA)** desarrollada con Angular, diseñada para gestionar, organizar y dar seguimiento a una lista de proyectos personales. Permite a los usuarios crear, leer, actualizar y eliminar (CRUD) proyectos, ofreciendo funcionalidades de autenticación y persistencia de datos en la nube.
 
-To start a local development server, run:
+## ✨ Características y Funcionalidades Principales
 
-```bash
-ng serve
-```
+* [cite_start]**Autenticación Completa:** Registro, inicio de sesión (login) y cierre de sesión (logout) seguros implementados con Firebase Authentication
+* [cite_start]**Gestión CRUD:** Operaciones CRUD completas sobre la entidad principal: **Proyectos**.
+* [cite_start]**Control de Acceso:** Rutas protegidas mediante Angular Guards [cite: 32][cite_start], asegurando que solo los usuarios autenticados puedan acceder a la gestión de proyectos[cite: 12].
+* [cite_start]**Búsqueda en Tiempo Real:** Filtro reactivo en la lista de proyectos para una búsqueda rápida
+* [cite_start]**Formularios Reactivos:** Uso de formularios reactivos con validaciones para garantizar la integridad de los datos
+* [cite_start]**Pipes Personalizados:** Uso de pipes nativos y uno personalizado para transformar datos en la vista
+* [cite_start]**Gestión de Estados:** Implementación de un Observable/Subject en los servicios para manejar estados reactivos de la aplicación
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## ⚙️ Tecnologías y Herramientas Utilizadas
 
-## Code scaffolding
+| Categoría | Herramienta | Uso |
+| :--- | :--- | :--- |
+| **Framework Frontend** | Angular (Standalone Components) | [cite_start]Desarrollo de la interfaz de usuario
+| **Base de Datos** | Firebase Firestore | [cite_start]Persistencia de datos en la nube para la entidad Proyectos
+| **Autenticación** | Firebase Authentication | [cite_start]Manejo del registro e inicio de sesión de usuarios
+| **Conexión DB** | AngularFire | [cite_start]Módulo oficial para integrar Angular con Firebase
+| **Estilos** | CSS Puro / Bootstrap / (Indica el que usaste) | [cite_start]Diseño limpio y responsivo
+| **Control de Versiones** | Git / GitHub | [cite_start]Gestión de código fuente y colaboración
+| **Despliegue** | Firebase Hosting | [cite_start]Alojamiento de la aplicación web
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🚀 Requisitos para Instalar y Ejecutar Localmente
 
-```bash
-ng generate component component-name
-```
+1.  **Clonar el Repositorio:**
+    ```bash
+    git clone [https://www.youtube.com/watch?v=YwyJyXtq6U4](https://www.youtube.com/watch?v=YwyJyXtq6U4)
+    cd gestor-proyectos-personales
+    ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+2.  **Instalar Dependencias:**
+    ```bash
+    npm install
+    ```
 
-```bash
-ng generate --help
-```
+3.  **Configuración de Firebase:**
+    Asegúrate de que el archivo de entorno (`src/environments/environment.ts`) contenga la configuración de tu proyecto de Firebase (clave API, Project ID, etc.).
 
-## Building
+4.  **Ejecutar la Aplicación:**
+    ```bash
+    ng serve
+    ```
+    La aplicación estará disponible en `http://localhost:4200/`.
 
-To build the project run:
+## 🏛️ Arquitectura del Proyecto (Componentes Principales y Servicios)
 
-```bash
-ng build
-```
+### Componentes de Página (Vistas)
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+* `LoginComponent`: Maneja la autenticación de usuarios.
+* `RegisterComponent`: Permite la creación de nuevas cuentas.
+* `DashboardComponent`: Vista principal accesible tras el login.
+* `ProjectsListComponent`: Muestra la lista de proyectos y la barra de búsqueda/filtros.
+* [cite_start]`ProjectDetailComponent` (o similar): Muestra la información individual de un proyecto[cite: 7].
 
-## Running unit tests
+### Servicios
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+* [cite_start]`AuthService`: Encargado de las operaciones con Firebase Authentication (registro, login, logout)[cite: 19].
+* [cite_start]`ProjectsService`: Maneja las operaciones CRUD con Firestore para la entidad "Proyectos"[cite: 18].
+* [cite_start]`GuardService` (o similar): Implementa la lógica para proteger las rutas de acceso restringido[cite: 32].
 
-```bash
-ng test
-```
+## 🔗 Enlaces Importantes
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Recurso | URL | Requisito de la Entrega |
+| :--- | :--- | :--- |
+| **Aplicación Publicada (Deploy)** | **`https://gestor-proyectos-personales.web.app`**
+| **Video de Demostración** | [**Pega aquí el enlace de tu video de 5 a 8 minutos**] 
